@@ -1,6 +1,6 @@
 {
-  "name": "@0xfps/tiny-merkle-tree",
-  "version": "0.0.0",
+  "name": "@fifteenfigures/tiny-merkle-tree",
+  "version": "0.0.1",
   "description": "A tiny, left-aligned merkle tree implementation in TypeScript.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -11,8 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
-    "type": "git",
-    "url": "git+https://github.com/0xfps/tiny-merkle-tree-ts.git"
+    "type": "git"
   },
   "keywords": [
     "merkle-tree",
@@ -20,10 +19,8 @@
   ],
   "author": "fps",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/0xfps/tiny-merkle-tree-ts/issues"
-  },
-  "homepage": "https://github.com/0xfps/tiny-merkle-tree-ts#readme",
+  "bugs": {},
+  "homepage": "",
   "dependencies": {
     "ethers": "^6.15.0",
     "tsup": "^8.5.0"
