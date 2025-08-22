@@ -3,6 +3,8 @@ import { TreeInterface } from "../../interfaces/tree";
 import sortAndConcatLeaves from "../utils/leaf-actions";
 
 export function buildTree(leaves: string[]): TreeInterface {
+    if (leaves.length < 2) throw new Error("Tree must be built with at least 2 leaves!")
+    
     // Start tree with all the leaves.
     let tree = [leaves];
     let length = leaves.length;

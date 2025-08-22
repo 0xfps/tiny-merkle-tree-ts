@@ -6,6 +6,7 @@ import assert from "node:assert/strict"
 
 export function generateProofForLeaf(this: Tree, leaf: string): Proof {
     const { tree } = this
+    
     let currentLeaf = leaf;
     let treeWithoutRoot = tree.slice(1, tree.length)
     let lenTreeWithNoRoot = treeWithoutRoot.length

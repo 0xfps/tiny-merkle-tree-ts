@@ -1,4 +1,4 @@
-export type Proof = {
+export interface Proof {
     proof: string[]
     directions: number[]
 }
