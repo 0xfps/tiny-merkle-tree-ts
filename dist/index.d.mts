@@ -12,7 +12,7 @@ interface MerkleTreeInterface {
     verifyProof: (leaf: string, proof: Proof) => boolean;
 }
 
-declare class Tree implements MerkleTreeInterface {
+declare class MiniMerkleTree implements MerkleTreeInterface {
     tree: string[][];
     root: string;
     depth: number;
@@ -34,4 +34,4 @@ interface CircomProof {
 
 declare function formatForCircom(proof: Proof): CircomProof;
 
-export { concatLeaves, Tree as default, formatForCircom, sortAndConcatLeaves, sortLeavesInAscOrder };
+export { concatLeaves, MiniMerkleTree as default, formatForCircom, sortAndConcatLeaves, sortLeavesInAscOrder };

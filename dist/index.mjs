@@ -104,7 +104,7 @@ function verifyMerkleProof(root, leaf, merkleProof) {
 }
 
 // src/tree/index.ts
-var Tree = class {
+var MiniMerkleTree = class {
   tree;
   root;
   depth;
@@ -152,7 +152,7 @@ function formatForCircom(proof) {
 }
 
 // src/index.ts
-var index_default = Tree;
+var index_default = MiniMerkleTree;
 export {
   concatLeaves,
   index_default as default,

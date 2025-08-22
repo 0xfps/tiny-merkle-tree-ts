@@ -144,7 +144,7 @@ function verifyMerkleProof(root, leaf, merkleProof) {
 }
 
 // src/tree/index.ts
-var Tree = class {
+var MiniMerkleTree = class {
   tree;
   root;
   depth;
@@ -192,7 +192,7 @@ function formatForCircom(proof) {
 }
 
 // src/index.ts
-var index_default = Tree;
+var index_default = MiniMerkleTree;
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   concatLeaves,
