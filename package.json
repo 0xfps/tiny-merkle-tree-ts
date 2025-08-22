@@ -1,5 +1,5 @@
 {
-  "name": "tiny-merkle-tree",
+  "name": "@0xfps/tiny-merkle-tree",
   "version": "0.0.0",
   "description": "A tiny, left-aligned merkle tree implementation in TypeScript.",
   "main": "./dist/index.js",
