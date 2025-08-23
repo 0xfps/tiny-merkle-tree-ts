@@ -130,21 +130,47 @@ var MiniMerkleTree = class {
 
 // src/utils/format-for-circom.ts
 import { encodeBytes32String } from "ethers";
+
+// src/utils/bytes-to-bits.ts
+function bytesToBits(b) {
+  const bits = [];
+  for (let i = 0; i < b.length; i++) {
+    for (let j = 0; j < 8; j++) {
+      if ((Number(b[i]) & 1 << j) > 0) {
+        bits.push(1);
+      } else {
+        bits.push(0);
+      }
+    }
+  }
+  return bits;
+}
+
+// src/utils/convert-proof-leaf-to-bits.ts
+function convertProofToBits(proof) {
+  const hexProof = proof.slice(2, proof.length);
+  const uint8Array = new Uint8Array(Buffer.from(hexProof, "hex"));
+  return bytesToBits(uint8Array);
+}
+
+// src/utils/format-for-circom.ts
 function formatForCircom(proof) {
   if (proof.proof.length > 32) throw new Error("Proof length exceeds 32!");
   const length = proof.directions.length;
   const lengthTo32 = 32 - length;
   const validBits = [];
-  proof.directions.forEach(function(_) {
+  const proofBits = [];
+  proof.directions.forEach(function(_, index) {
+    proofBits.push(convertProofToBits(proof.proof[index]));
     validBits.push(1);
   });
   for (let i = 0; i < lengthTo32; i++) {
-    proof.proof.push(encodeBytes32String(""));
+    proofBits.push(convertProofToBits(encodeBytes32String("")));
     proof.directions.push(0);
     validBits.push(0);
   }
   const circomProof = {
-    proof: proof.proof,
+    proof: proofBits,
     directions: proof.directions,
     validBits
   };
@@ -154,6 +180,7 @@ function formatForCircom(proof) {
 // src/index.ts
 var index_default = MiniMerkleTree;
 export {
+  bytesToBits,
   concatLeaves,
   index_default as default,
   formatForCircom,

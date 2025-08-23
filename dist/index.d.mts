@@ -27,11 +27,13 @@ declare function concatLeaves(leaf1: string, leaf2: string): string;
 declare function sortAndConcatLeaves(leaf1: string, leaf2: string): string;
 
 interface CircomProof {
-    proof: string[];
+    proof: number[][];
     directions: number[];
     validBits: number[];
 }
 
 declare function formatForCircom(proof: Proof): CircomProof;
 
-export { concatLeaves, MiniMerkleTree as default, formatForCircom, sortAndConcatLeaves, sortLeavesInAscOrder };
+declare function bytesToBits(b: Uint8Array<ArrayBuffer>): number[];
+
+export { bytesToBits, concatLeaves, MiniMerkleTree as default, formatForCircom, sortAndConcatLeaves, sortLeavesInAscOrder };
