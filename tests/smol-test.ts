@@ -1,4 +1,4 @@
-import { AbiCoder, keccak256 } from "ethers";
+import { AbiCoder, sha256 } from "ethers";
 import Tree, { formatForCircom } from "../src";
 
 // This is not an official test.
@@ -10,19 +10,21 @@ for (let i = 0; i < 10; i++) {
 
 let leaves = leafs.map(function (leaf) {
     const encode = coder.encode(["string"], [leaf.toString()])
-    return keccak256(encode)
+    return sha256(encode)
 })
 
 const tree = new Tree(leaves)
 
 try {
-    let smolLeaf = keccak256(coder.encode(["string"], ["50"]));
+    let smolLeaf = sha256(coder.encode(["string"], ["50"]));
     tree.generateMerkleProof(smolLeaf)
 } catch {
     console.log('Leaf 50 not in tree!')
 }
 
-let smolLeaf = keccak256(coder.encode(["string"], ["5"]));
+console.log({ tree })
+
+let smolLeaf = sha256(coder.encode(["string"], ["5"]));
 const smallProof = tree.generateMerkleProof(smolLeaf)
 
 console.log(smallProof)

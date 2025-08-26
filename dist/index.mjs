@@ -1,5 +1,5 @@
 // src/tree/build-tree.ts
-import { keccak256 } from "ethers";
+import { sha256 } from "ethers";
 
 // src/utils/leaf-actions.ts
 function sortLeavesInAscOrder(leaf1, leaf2) {
@@ -29,13 +29,13 @@ function buildTree(leaves) {
     const hashedPairs = [];
     if (length == 2) {
       concatLeaves2 = sortAndConcatLeaves(leaves[0], leaves[1]);
-      hashedPairs.push(keccak256(concatLeaves2));
+      hashedPairs.push(sha256(concatLeaves2));
       tree.unshift(hashedPairs);
       break;
     }
     for (let i = 0; i < length - 1; i += 2) {
       concatLeaves2 = sortAndConcatLeaves(leaves[i], leaves[i + 1]);
-      hashedPairs.push(keccak256(concatLeaves2));
+      hashedPairs.push(sha256(concatLeaves2));
     }
     if (length % 2 == 1) hashedPairs.push(leaves[length - 1]);
     tree.unshift(hashedPairs);
@@ -51,7 +51,7 @@ function buildTree(leaves) {
 }
 
 // src/tree/generate-proof.ts
-import { keccak256 as keccak2562 } from "ethers";
+import { sha256 as sha2562 } from "ethers";
 import assert from "assert/strict";
 function generateProofForLeaf(leaf) {
   const { tree } = this;
@@ -77,7 +77,7 @@ function generateProofForLeaf(leaf) {
     }
     directions.push(getLeafDir(siblingLeaf, currentLeaf));
     proof.push(siblingLeaf);
-    currentLeaf = keccak2562(sortAndConcatLeaves(currentLeaf, siblingLeaf));
+    currentLeaf = sha2562(sortAndConcatLeaves(currentLeaf, siblingLeaf));
   }
   assert.equal(proof.length, directions.length);
   return { proof, directions };
@@ -91,14 +91,14 @@ function getSiblingLeaf(leaves, leaf) {
 }
 
 // src/tree/verify-merkle-proof.ts
-import { keccak256 as keccak2563 } from "ethers";
+import { sha256 as sha2563 } from "ethers";
 function verifyMerkleProof(root, leaf, merkleProof) {
   const { proof, directions } = merkleProof;
   let currentHash = leaf;
   proof.forEach(function(currentLeaf, i) {
     if (directions[i]) {
-      currentHash = keccak2563(sortAndConcatLeaves(currentLeaf, currentHash));
-    } else currentHash = keccak2563(sortAndConcatLeaves(currentHash, currentLeaf));
+      currentHash = sha2563(sortAndConcatLeaves(currentLeaf, currentHash));
+    } else currentHash = sha2563(sortAndConcatLeaves(currentHash, currentLeaf));
   });
   return currentHash == root;
 }

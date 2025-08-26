@@ -1,10 +1,10 @@
-import { keccak256 } from "ethers";
+import { sha256 } from "ethers";
 import { TreeInterface } from "../../interfaces/tree";
 import sortAndConcatLeaves from "../utils/leaf-actions";
 
 export function buildTree(leaves: string[]): TreeInterface {
     if (leaves.length < 2) throw new Error("Tree must be built with at least 2 leaves!")
-    
+
     // Start tree with all the leaves.
     let tree = [leaves];
     let length = leaves.length;
@@ -22,7 +22,7 @@ export function buildTree(leaves: string[]): TreeInterface {
         // leaves to yield the root.
         if (length == 2) {
             concatLeaves = sortAndConcatLeaves(leaves[0], leaves[1]);
-            hashedPairs.push(keccak256(concatLeaves));
+            hashedPairs.push(sha256(concatLeaves));
             tree.unshift(hashedPairs);
             break;
         }
@@ -33,7 +33,7 @@ export function buildTree(leaves: string[]): TreeInterface {
         // grouping, it's not touched here.
         for (let i = 0; i < length - 1; i += 2) {
             concatLeaves = sortAndConcatLeaves(leaves[i], leaves[i + 1])
-            hashedPairs.push(keccak256(concatLeaves));
+            hashedPairs.push(sha256(concatLeaves));
         }
 
         // The leaf not touched in the loop as a result of the depth leaves being
