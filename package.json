@@ -1,6 +1,6 @@
 {
   "name": "@fifteenfigures/mini-merkle-tree",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A tiny, left-aligned merkle tree implementation in TypeScript.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -16,7 +16,11 @@
   "keywords": [
     "merkle-tree",
     "mini-merkle",
-    "mini-merkle-tree"
+    "mini-merkle-tree",
+    "sha256",
+    "hash",
+    "zk",
+    "zk-snark"
   ],
   "author": "fifteenfigures",
   "license": "MIT",

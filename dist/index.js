@@ -70,13 +70,13 @@ function buildTree(leaves) {
     const hashedPairs = [];
     if (length == 2) {
       concatLeaves2 = sortAndConcatLeaves(leaves[0], leaves[1]);
-      hashedPairs.push((0, import_ethers.keccak256)(concatLeaves2));
+      hashedPairs.push((0, import_ethers.sha256)(concatLeaves2));
       tree.unshift(hashedPairs);
       break;
     }
     for (let i = 0; i < length - 1; i += 2) {
       concatLeaves2 = sortAndConcatLeaves(leaves[i], leaves[i + 1]);
-      hashedPairs.push((0, import_ethers.keccak256)(concatLeaves2));
+      hashedPairs.push((0, import_ethers.sha256)(concatLeaves2));
     }
     if (length % 2 == 1) hashedPairs.push(leaves[length - 1]);
     tree.unshift(hashedPairs);
@@ -118,7 +118,7 @@ function generateProofForLeaf(leaf) {
     }
     directions.push(getLeafDir(siblingLeaf, currentLeaf));
     proof.push(siblingLeaf);
-    currentLeaf = (0, import_ethers2.keccak256)(sortAndConcatLeaves(currentLeaf, siblingLeaf));
+    currentLeaf = (0, import_ethers2.sha256)(sortAndConcatLeaves(currentLeaf, siblingLeaf));
   }
   import_strict.default.equal(proof.length, directions.length);
   return { proof, directions };
@@ -138,8 +138,8 @@ function verifyMerkleProof(root, leaf, merkleProof) {
   let currentHash = leaf;
   proof.forEach(function(currentLeaf, i) {
     if (directions[i]) {
-      currentHash = (0, import_ethers3.keccak256)(sortAndConcatLeaves(currentLeaf, currentHash));
-    } else currentHash = (0, import_ethers3.keccak256)(sortAndConcatLeaves(currentHash, currentLeaf));
+      currentHash = (0, import_ethers3.sha256)(sortAndConcatLeaves(currentLeaf, currentHash));
+    } else currentHash = (0, import_ethers3.sha256)(sortAndConcatLeaves(currentHash, currentLeaf));
   });
   return currentHash == root;
 }
