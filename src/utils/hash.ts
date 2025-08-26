@@ -1,5 +1,6 @@
 import { poseidon } from "poseidon-hash";
+import { smolPadding } from "./smol-padding";
 
 export function hash(leaves: string[]): string {
-    return `0x${poseidon(leaves).toString(16)}`
+    return smolPadding(`0x${poseidon(leaves).toString(16)}`)
 }

@@ -34,14 +34,22 @@ __export(index_exports, {
   concatLeaves: () => concatLeaves,
   default: () => index_default,
   formatForCircom: () => formatForCircom,
+  smolPadding: () => smolPadding,
   sortAndConcatLeaves: () => sortAndConcatLeaves,
   sortLeavesInAscOrder: () => sortLeavesInAscOrder
 });
 module.exports = __toCommonJS(index_exports);
 
+// src/utils/smol-padding.ts
+function smolPadding(str) {
+  const lenRem = 64 - (str.length - 2);
+  const pad0 = "0".repeat(lenRem);
+  return `0x${pad0}${str.slice(2, str.length)}`;
+}
+
 // src/utils/leaf-actions.ts
 function sortLeavesInAscOrder(leaf1, leaf2) {
-  return leaf1 < leaf2 ? [leaf1, leaf2] : [leaf2, leaf1];
+  return leaf1 < leaf2 ? [smolPadding(leaf1), smolPadding(leaf2)] : [smolPadding(leaf2), smolPadding(leaf1)];
 }
 function concatLeaves(leaf1, leaf2) {
   return Buffer.concat([
@@ -60,7 +68,7 @@ function sortAndConcatLeaves(leaf1, leaf2) {
 // src/utils/hash.ts
 var import_poseidon_hash = require("poseidon-hash");
 function hash(leaves) {
-  return `0x${(0, import_poseidon_hash.poseidon)(leaves).toString(16)}`;
+  return smolPadding(`0x${(0, import_poseidon_hash.poseidon)(leaves).toString(16)}`);
 }
 
 // src/tree/build-tree.ts
@@ -226,6 +234,7 @@ var index_default = MiniMerkleTree;
   bytesToBits,
   concatLeaves,
   formatForCircom,
+  smolPadding,
   sortAndConcatLeaves,
   sortLeavesInAscOrder
 });

@@ -1,6 +1,13 @@
+// src/utils/smol-padding.ts
+function smolPadding(str) {
+  const lenRem = 64 - (str.length - 2);
+  const pad0 = "0".repeat(lenRem);
+  return `0x${pad0}${str.slice(2, str.length)}`;
+}
+
 // src/utils/leaf-actions.ts
 function sortLeavesInAscOrder(leaf1, leaf2) {
-  return leaf1 < leaf2 ? [leaf1, leaf2] : [leaf2, leaf1];
+  return leaf1 < leaf2 ? [smolPadding(leaf1), smolPadding(leaf2)] : [smolPadding(leaf2), smolPadding(leaf1)];
 }
 function concatLeaves(leaf1, leaf2) {
   return Buffer.concat([
@@ -19,7 +26,7 @@ function sortAndConcatLeaves(leaf1, leaf2) {
 // src/utils/hash.ts
 import { poseidon } from "poseidon-hash";
 function hash(leaves) {
-  return `0x${poseidon(leaves).toString(16)}`;
+  return smolPadding(`0x${poseidon(leaves).toString(16)}`);
 }
 
 // src/tree/build-tree.ts
@@ -185,6 +192,7 @@ export {
   concatLeaves,
   index_default as default,
   formatForCircom,
+  smolPadding,
   sortAndConcatLeaves,
   sortLeavesInAscOrder
 };
