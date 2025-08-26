@@ -1,8 +1,8 @@
-import { sha256 } from "ethers";
 import Tree from ".";
 import { Proof } from "../../interfaces/proof";
-import sortAndConcatLeaves, { getLeafDir } from "../utils/leaf-actions";
+import { getLeafDir, sortLeavesInAscOrder } from "../utils/leaf-actions";
 import assert from "node:assert/strict"
+import { hash } from "../utils/hash";
 
 export function generateProofForLeaf(this: Tree, leaf: string): Proof {
     const { tree } = this
@@ -53,7 +53,7 @@ export function generateProofForLeaf(this: Tree, leaf: string): Proof {
         proof.push(siblingLeaf)
 
         // Get the next hash using the two leaves.
-        currentLeaf = sha256(sortAndConcatLeaves(currentLeaf, siblingLeaf));
+        currentLeaf = hash(sortLeavesInAscOrder(currentLeaf, siblingLeaf));
     }
 
     // The number of leaves in the proof MUST be equal to the number of directions.

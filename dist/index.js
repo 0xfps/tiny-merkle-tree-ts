@@ -39,9 +39,6 @@ __export(index_exports, {
 });
 module.exports = __toCommonJS(index_exports);
 
-// src/tree/build-tree.ts
-var import_ethers = require("ethers");
-
 // src/utils/leaf-actions.ts
 function sortLeavesInAscOrder(leaf1, leaf2) {
   return leaf1 < leaf2 ? [leaf1, leaf2] : [leaf2, leaf1];
@@ -60,23 +57,29 @@ function sortAndConcatLeaves(leaf1, leaf2) {
   return concatLeaves(firstLeaf, secondLeaf);
 }
 
+// src/utils/hash.ts
+var import_poseidon_hash = require("poseidon-hash");
+function hash(leaves) {
+  return `0x${(0, import_poseidon_hash.poseidon)(leaves).toString(16)}`;
+}
+
 // src/tree/build-tree.ts
 function buildTree(leaves) {
   if (leaves.length < 2) throw new Error("Tree must be built with at least 2 leaves!");
   let tree = [leaves];
   let length = leaves.length;
   while (length >= 2) {
-    let concatLeaves2;
+    let sortedLeaves;
     const hashedPairs = [];
     if (length == 2) {
-      concatLeaves2 = sortAndConcatLeaves(leaves[0], leaves[1]);
-      hashedPairs.push((0, import_ethers.sha256)(concatLeaves2));
+      sortedLeaves = sortLeavesInAscOrder(leaves[0], leaves[1]);
+      hashedPairs.push(hash(sortedLeaves));
       tree.unshift(hashedPairs);
       break;
     }
     for (let i = 0; i < length - 1; i += 2) {
-      concatLeaves2 = sortAndConcatLeaves(leaves[i], leaves[i + 1]);
-      hashedPairs.push((0, import_ethers.sha256)(concatLeaves2));
+      sortedLeaves = sortLeavesInAscOrder(leaves[i], leaves[i + 1]);
+      hashedPairs.push(hash(sortedLeaves));
     }
     if (length % 2 == 1) hashedPairs.push(leaves[length - 1]);
     tree.unshift(hashedPairs);
@@ -92,7 +95,6 @@ function buildTree(leaves) {
 }
 
 // src/tree/generate-proof.ts
-var import_ethers2 = require("ethers");
 var import_strict = __toESM(require("assert/strict"));
 function generateProofForLeaf(leaf) {
   const { tree } = this;
@@ -118,7 +120,7 @@ function generateProofForLeaf(leaf) {
     }
     directions.push(getLeafDir(siblingLeaf, currentLeaf));
     proof.push(siblingLeaf);
-    currentLeaf = (0, import_ethers2.sha256)(sortAndConcatLeaves(currentLeaf, siblingLeaf));
+    currentLeaf = hash(sortLeavesInAscOrder(currentLeaf, siblingLeaf));
   }
   import_strict.default.equal(proof.length, directions.length);
   return { proof, directions };
@@ -132,14 +134,13 @@ function getSiblingLeaf(leaves, leaf) {
 }
 
 // src/tree/verify-merkle-proof.ts
-var import_ethers3 = require("ethers");
 function verifyMerkleProof(root, leaf, merkleProof) {
   const { proof, directions } = merkleProof;
   let currentHash = leaf;
   proof.forEach(function(currentLeaf, i) {
     if (directions[i]) {
-      currentHash = (0, import_ethers3.sha256)(sortAndConcatLeaves(currentLeaf, currentHash));
-    } else currentHash = (0, import_ethers3.sha256)(sortAndConcatLeaves(currentHash, currentLeaf));
+      currentHash = hash(sortLeavesInAscOrder(currentLeaf, currentHash));
+    } else currentHash = hash(sortLeavesInAscOrder(currentHash, currentLeaf));
   });
   return currentHash == root;
 }
@@ -170,7 +171,7 @@ var MiniMerkleTree = class {
 };
 
 // src/utils/format-for-circom.ts
-var import_ethers4 = require("ethers");
+var import_ethers = require("ethers");
 
 // src/utils/bytes-to-bits.ts
 function bytesToBits(b) {
@@ -206,7 +207,7 @@ function formatForCircom(proof) {
     validBits.push(1);
   });
   for (let i = 0; i < lengthTo32; i++) {
-    proofBits.push(convertProofToBits((0, import_ethers4.encodeBytes32String)("")));
+    proofBits.push(convertProofToBits((0, import_ethers.encodeBytes32String)("")));
     proof.directions.push(0);
     validBits.push(0);
   }

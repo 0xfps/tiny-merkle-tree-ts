@@ -1,6 +1,6 @@
-import { sha256 } from "ethers";
 import { Proof } from "../../interfaces/proof";
-import sortAndConcatLeaves from "../utils/leaf-actions";
+import { sortLeavesInAscOrder } from "../utils/leaf-actions";
+import { hash } from "../utils/hash";
 
 export function verifyMerkleProof(root: string, leaf: string, merkleProof: Proof): boolean {
     const { proof, directions } = merkleProof
@@ -8,8 +8,8 @@ export function verifyMerkleProof(root: string, leaf: string, merkleProof: Proof
     let currentHash = leaf
     proof.forEach(function (currentLeaf, i) {
         if (directions[i]) {
-            currentHash = sha256(sortAndConcatLeaves(currentLeaf, currentHash))
-        } else currentHash = sha256(sortAndConcatLeaves(currentHash, currentLeaf))
+            currentHash = hash(sortLeavesInAscOrder(currentLeaf, currentHash))
+        } else currentHash = hash(sortLeavesInAscOrder(currentHash, currentLeaf))
     })
 
     return currentHash == root
