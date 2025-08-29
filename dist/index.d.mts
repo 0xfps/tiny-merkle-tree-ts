@@ -36,4 +36,6 @@ declare function formatForCircom(proof: Proof): CircomProof;
 
 declare function bytesToBits(b: Uint8Array<ArrayBuffer>): number[];
 
-export { bytesToBits, concatLeaves, MiniMerkleTree as default, formatForCircom, sortAndConcatLeaves, sortLeavesInAscOrder };
+declare function smolPadding(str: string): string;
+
+export { bytesToBits, concatLeaves, MiniMerkleTree as default, formatForCircom, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder };

@@ -1,9 +1,13 @@
-// src/tree/build-tree.ts
-import { sha256 } from "ethers";
+// src/utils/smol-padding.ts
+function smolPadding(str) {
+  const lenRem = 64 - (str.length - 2);
+  const pad0 = "0".repeat(lenRem);
+  return `0x${pad0}${str.slice(2, str.length)}`;
+}
 
 // src/utils/leaf-actions.ts
 function sortLeavesInAscOrder(leaf1, leaf2) {
-  return leaf1 < leaf2 ? [leaf1, leaf2] : [leaf2, leaf1];
+  return leaf1 < leaf2 ? [smolPadding(leaf1), smolPadding(leaf2)] : [smolPadding(leaf2), smolPadding(leaf1)];
 }
 function concatLeaves(leaf1, leaf2) {
   return Buffer.concat([
@@ -19,23 +23,29 @@ function sortAndConcatLeaves(leaf1, leaf2) {
   return concatLeaves(firstLeaf, secondLeaf);
 }
 
+// src/utils/hash.ts
+import { poseidon } from "poseidon-hash";
+function hash(leaves) {
+  return smolPadding(`0x${poseidon(leaves).toString(16)}`);
+}
+
 // src/tree/build-tree.ts
 function buildTree(leaves) {
   if (leaves.length < 2) throw new Error("Tree must be built with at least 2 leaves!");
   let tree = [leaves];
   let length = leaves.length;
   while (length >= 2) {
-    let concatLeaves2;
+    let sortedLeaves;
     const hashedPairs = [];
     if (length == 2) {
-      concatLeaves2 = sortAndConcatLeaves(leaves[0], leaves[1]);
-      hashedPairs.push(sha256(concatLeaves2));
+      sortedLeaves = sortLeavesInAscOrder(leaves[0], leaves[1]);
+      hashedPairs.push(hash(sortedLeaves));
       tree.unshift(hashedPairs);
       break;
     }
     for (let i = 0; i < length - 1; i += 2) {
-      concatLeaves2 = sortAndConcatLeaves(leaves[i], leaves[i + 1]);
-      hashedPairs.push(sha256(concatLeaves2));
+      sortedLeaves = sortLeavesInAscOrder(leaves[i], leaves[i + 1]);
+      hashedPairs.push(hash(sortedLeaves));
     }
     if (length % 2 == 1) hashedPairs.push(leaves[length - 1]);
     tree.unshift(hashedPairs);
@@ -51,7 +61,6 @@ function buildTree(leaves) {
 }
 
 // src/tree/generate-proof.ts
-import { sha256 as sha2562 } from "ethers";
 import assert from "assert/strict";
 function generateProofForLeaf(leaf) {
   const { tree } = this;
@@ -77,7 +86,7 @@ function generateProofForLeaf(leaf) {
     }
     directions.push(getLeafDir(siblingLeaf, currentLeaf));
     proof.push(siblingLeaf);
-    currentLeaf = sha2562(sortAndConcatLeaves(currentLeaf, siblingLeaf));
+    currentLeaf = hash(sortLeavesInAscOrder(currentLeaf, siblingLeaf));
   }
   assert.equal(proof.length, directions.length);
   return { proof, directions };
@@ -91,14 +100,13 @@ function getSiblingLeaf(leaves, leaf) {
 }
 
 // src/tree/verify-merkle-proof.ts
-import { sha256 as sha2563 } from "ethers";
 function verifyMerkleProof(root, leaf, merkleProof) {
   const { proof, directions } = merkleProof;
   let currentHash = leaf;
   proof.forEach(function(currentLeaf, i) {
     if (directions[i]) {
-      currentHash = sha2563(sortAndConcatLeaves(currentLeaf, currentHash));
-    } else currentHash = sha2563(sortAndConcatLeaves(currentHash, currentLeaf));
+      currentHash = hash(sortLeavesInAscOrder(currentLeaf, currentHash));
+    } else currentHash = hash(sortLeavesInAscOrder(currentHash, currentLeaf));
   });
   return currentHash == root;
 }
@@ -184,6 +192,7 @@ export {
   concatLeaves,
   index_default as default,
   formatForCircom,
+  smolPadding,
   sortAndConcatLeaves,
   sortLeavesInAscOrder
 };

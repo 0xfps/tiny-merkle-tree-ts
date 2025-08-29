@@ -1,6 +1,6 @@
-import { sha256 } from "ethers";
 import { TreeInterface } from "../../interfaces/tree";
-import sortAndConcatLeaves from "../utils/leaf-actions";
+import { sortLeavesInAscOrder } from "../utils/leaf-actions";
+import { hash } from "../utils/hash";
 
 export function buildTree(leaves: string[]): TreeInterface {
     if (leaves.length < 2) throw new Error("Tree must be built with at least 2 leaves!")
@@ -14,15 +14,15 @@ export function buildTree(leaves: string[]): TreeInterface {
     // New leaves for new depths are recomputed based off of the
     // previous ones.
     while (length >= 2) {
-        let concatLeaves: string;
+        let sortedLeaves: string[];
         const hashedPairs: string[] = []
 
         // When length == 2, which will eventually be so given
         // the division applied at the end, it is the last two
         // leaves to yield the root.
         if (length == 2) {
-            concatLeaves = sortAndConcatLeaves(leaves[0], leaves[1]);
-            hashedPairs.push(sha256(concatLeaves));
+            sortedLeaves = sortLeavesInAscOrder(leaves[0], leaves[1]);
+            hashedPairs.push(hash(sortedLeaves));
             tree.unshift(hashedPairs);
             break;
         }
@@ -32,8 +32,8 @@ export function buildTree(leaves: string[]): TreeInterface {
         // This loop runs in a way that if there's an extra leaf after
         // grouping, it's not touched here.
         for (let i = 0; i < length - 1; i += 2) {
-            concatLeaves = sortAndConcatLeaves(leaves[i], leaves[i + 1])
-            hashedPairs.push(sha256(concatLeaves));
+            sortedLeaves = sortLeavesInAscOrder(leaves[i], leaves[i + 1])
+            hashedPairs.push(hash(sortedLeaves));
         }
 
         // The leaf not touched in the loop as a result of the depth leaves being

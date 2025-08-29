@@ -1,5 +1,9 @@
+import { smolPadding } from "./smol-padding";
+
 export function sortLeavesInAscOrder(leaf1: string, leaf2: string): [string, string] {
-    return (leaf1 < leaf2) ? [leaf1, leaf2] : [leaf2, leaf1]
+    return (leaf1 < leaf2)
+        ? [smolPadding(leaf1), smolPadding(leaf2)]
+        : [smolPadding(leaf2), smolPadding(leaf1)]
 }
 
 export function concatLeaves(leaf1: string, leaf2: string): string {
