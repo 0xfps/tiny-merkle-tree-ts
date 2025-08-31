@@ -6,7 +6,7 @@ import { smolPadding } from "../src/utils/smol-padding";
 // This is not an official test.
 const coder = AbiCoder.defaultAbiCoder()
 let leafs: number[] = [];
-for (let i = 0; i < 11; i++) {
+for (let i = 0; i < 2; i++) {
     leafs.push(i)
 }
 
@@ -26,10 +26,22 @@ const tree = new Tree(leaves)
 
 console.log({ tree })
 
-let smolLeaf = smolPadding(`0x${poseidon([keccak256(coder.encode(["string"], ["5"]))]).toString(16)}`)
+let smolLeaf = smolPadding(`0x${poseidon([keccak256(coder.encode(["string"], ["1"]))]).toString(16)}`)
 const smallProof = tree.generateMerkleProof(smolLeaf)
 
 console.log(smallProof)
 
 console.log(tree.verifyProof(smolLeaf, smallProof))
-console.log(formatForCircom(smallProof))
+// console.log(formatForCircom(smallProof))
+
+console.log(BigInt(smallProof.proof[0]))
+
+const bitProof = formatForCircom(smallProof).proof[0]
+console.log({ bitProof })
+
+let num = 0n
+for (let i = 0; i < 256; i++) {
+    num += BigInt(bitProof[i]) * (2n ** BigInt(i));
+}
+
+console.log(num)
