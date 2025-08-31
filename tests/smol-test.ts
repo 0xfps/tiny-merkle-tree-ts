@@ -26,10 +26,10 @@ const tree = new Tree(leaves)
 
 console.log({ tree })
 
-// let smolLeaf = smolPadding(`0x${poseidon([keccak256(coder.encode(["string"], ["5"]))]).toString(16)}`)
-// const smallProof = tree.generateMerkleProof(smolLeaf)
+let smolLeaf = smolPadding(`0x${poseidon([keccak256(coder.encode(["string"], ["5"]))]).toString(16)}`)
+const smallProof = tree.generateMerkleProof(smolLeaf)
 
-// console.log(smallProof)
+console.log(smallProof)
 
-// console.log(tree.verifyProof(smolLeaf, smallProof))
-// console.log(formatForCircom(smallProof))
+console.log(tree.verifyProof(smolLeaf, smallProof))
+console.log(formatForCircom(smallProof))

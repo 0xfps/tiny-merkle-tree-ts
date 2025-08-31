@@ -38,4 +38,6 @@ declare function bytesToBits(b: Uint8Array<ArrayBuffer>): number[];
 
 declare function smolPadding(str: string): string;
 
-export { bytesToBits, concatLeaves, MiniMerkleTree as default, formatForCircom, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder };
+declare function convertProofToBits(proof: string): number[];
+
+export { bytesToBits, concatLeaves, convertProofToBits, MiniMerkleTree as default, formatForCircom, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder };
