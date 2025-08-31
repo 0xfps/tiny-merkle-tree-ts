@@ -103,10 +103,8 @@ function getSiblingLeaf(leaves, leaf) {
 function verifyMerkleProof(root, leaf, merkleProof) {
   const { proof, directions } = merkleProof;
   let currentHash = leaf;
-  proof.forEach(function(currentLeaf, i) {
-    if (directions[i]) {
-      currentHash = hash(sortLeavesInAscOrder(currentLeaf, currentHash));
-    } else currentHash = hash(sortLeavesInAscOrder(currentHash, currentLeaf));
+  proof.forEach(function(currentLeaf) {
+    currentHash = hash(sortLeavesInAscOrder(currentLeaf, currentHash));
   });
   return currentHash == root;
 }
@@ -157,7 +155,7 @@ function bytesToBits(b) {
 // src/utils/convert-proof-leaf-to-bits.ts
 function convertProofToBits(proof) {
   const hexProof = proof.slice(2, proof.length);
-  const uint8Array = new Uint8Array(Buffer.from(hexProof, "hex"));
+  const uint8Array = new Uint8Array(Buffer.from(hexProof, "hex").reverse());
   return bytesToBits(uint8Array);
 }
 
@@ -190,6 +188,7 @@ var index_default = MiniMerkleTree;
 export {
   bytesToBits,
   concatLeaves,
+  convertProofToBits,
   index_default as default,
   formatForCircom,
   smolPadding,

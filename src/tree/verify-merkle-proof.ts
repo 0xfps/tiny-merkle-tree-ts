@@ -6,10 +6,8 @@ export function verifyMerkleProof(root: string, leaf: string, merkleProof: Proof
     const { proof, directions } = merkleProof
 
     let currentHash = leaf
-    proof.forEach(function (currentLeaf, i) {
-        if (directions[i]) {
-            currentHash = hash(sortLeavesInAscOrder(currentLeaf, currentHash))
-        } else currentHash = hash(sortLeavesInAscOrder(currentHash, currentLeaf))
+    proof.forEach(function (currentLeaf) {
+        currentHash = hash(sortLeavesInAscOrder(currentLeaf, currentHash))
     })
 
     return currentHash == root

@@ -3,6 +3,7 @@ import sortAndConcatLeaves, { concatLeaves, sortLeavesInAscOrder } from "./utils
 import formatForCircom from "./utils/format-for-circom";
 import bytesToBits from "./utils/bytes-to-bits";
 import { smolPadding } from "./utils/smol-padding";
+import { convertProofToBits } from "./utils/convert-proof-leaf-to-bits";
 
 export {
     formatForCircom,
@@ -10,7 +11,8 @@ export {
     concatLeaves,
     sortLeavesInAscOrder,
     bytesToBits,
-    smolPadding
+    smolPadding,
+    convertProofToBits
 }
 
 export default MiniMerkleTree
