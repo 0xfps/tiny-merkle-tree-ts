@@ -185,11 +185,11 @@ function formatForCircom(proof) {
   return circomProof;
 }
 
-// src/utils/convert-to-circom-poseidon.ts
+// src/utils/standardize.ts
 import { F1Field } from "@zk2/ffjavascript";
 import { keccak256 } from "ethers";
 var PRIME = 21888242871839275222246405745257275088548364400416034343698204186575808495617n;
-function convertToValidPoseidon(str, reverse = false) {
+function standardizeToPoseidon(str, reverse = false) {
   const hash2 = keccak256(str);
   const hashBits = reverse ? bytesToBits(new Uint8Array(Buffer.from(hash2.slice(2, hash2.length), "hex").reverse())) : bytesToBits(new Uint8Array(Buffer.from(hash2.slice(2, hash2.length), "hex")));
   const reduced = new F1Field(PRIME).e(toNum(hashBits));
@@ -210,12 +210,12 @@ export {
   bytesToBits,
   concatLeaves,
   convertProofToBits,
-  convertToValidPoseidon,
   index_default as default,
   formatForCircom,
   smolPadding,
   sortAndConcatLeaves,
   sortLeavesInAscOrder,
+  standardizeToPoseidon,
   toNum
 };
 //# sourceMappingURL=index.mjs.map
