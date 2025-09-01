@@ -13,7 +13,7 @@ export function convertToValidPoseidon(str: string, reverse: boolean = false) {
     return smolPadding(`0x${reduced.toString(16)}`)
 }
 
-function toNum(s: number[]): BigInt {
+export function toNum(s: number[]): BigInt {
     let total = 0n;
 
     for (let i = 0; i < s.length; i++) {
