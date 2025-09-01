@@ -84,7 +84,7 @@ function generateProofForLeaf(leaf) {
         siblingLeaf = getSiblingLeaf(leavesAtDepth, currentLeaf);
       }
     }
-    directions.push(getLeafDir(siblingLeaf, currentLeaf));
+    directions.push(getLeafDir(currentLeaf, siblingLeaf));
     proof.push(siblingLeaf);
     currentLeaf = hash(sortLeavesInAscOrder(currentLeaf, siblingLeaf));
   }
@@ -103,8 +103,10 @@ function getSiblingLeaf(leaves, leaf) {
 function verifyMerkleProof(root, leaf, merkleProof) {
   const { proof, directions } = merkleProof;
   let currentHash = leaf;
-  proof.forEach(function(currentLeaf) {
-    currentHash = hash(sortLeavesInAscOrder(currentLeaf, currentHash));
+  proof.forEach(function(currentLeaf, i) {
+    if (directions[i]) {
+      currentHash = hash([currentLeaf, currentHash]);
+    } else currentHash = hash([currentHash, currentLeaf]);
   });
   return currentHash == root;
 }

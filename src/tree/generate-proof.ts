@@ -49,7 +49,7 @@ export function generateProofForLeaf(this: Tree, leaf: string): Proof {
         // Here, I get the direction of the leaves, it doesn't matter the order.
         // 0 meaning that the current leaf will go in front, and 1 meaning that
         // it goes behind. It's for the currentLeaf with respect to siblingLeaf.
-        directions.push(getLeafDir(siblingLeaf, currentLeaf))
+        directions.push(getLeafDir(currentLeaf, siblingLeaf))
         proof.push(siblingLeaf)
 
         // Get the next hash using the two leaves.
