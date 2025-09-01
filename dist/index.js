@@ -30,14 +30,17 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 // src/index.ts
 var index_exports = {};
 __export(index_exports, {
+  PRIME: () => PRIME,
   bytesToBits: () => bytesToBits,
   concatLeaves: () => concatLeaves,
   convertProofToBits: () => convertProofToBits,
+  convertToValidPoseidon: () => convertToValidPoseidon,
   default: () => index_default,
   formatForCircom: () => formatForCircom,
   smolPadding: () => smolPadding,
   sortAndConcatLeaves: () => sortAndConcatLeaves,
-  sortLeavesInAscOrder: () => sortLeavesInAscOrder
+  sortLeavesInAscOrder: () => sortLeavesInAscOrder,
+  toNum: () => toNum
 });
 module.exports = __toCommonJS(index_exports);
 
@@ -127,7 +130,7 @@ function generateProofForLeaf(leaf) {
         siblingLeaf = getSiblingLeaf(leavesAtDepth, currentLeaf);
       }
     }
-    directions.push(getLeafDir(siblingLeaf, currentLeaf));
+    directions.push(getLeafDir(currentLeaf, siblingLeaf));
     proof.push(siblingLeaf);
     currentLeaf = hash(sortLeavesInAscOrder(currentLeaf, siblingLeaf));
   }
@@ -146,8 +149,10 @@ function getSiblingLeaf(leaves, leaf) {
 function verifyMerkleProof(root, leaf, merkleProof) {
   const { proof, directions } = merkleProof;
   let currentHash = leaf;
-  proof.forEach(function(currentLeaf) {
-    currentHash = hash(sortLeavesInAscOrder(currentLeaf, currentHash));
+  proof.forEach(function(currentLeaf, i) {
+    if (directions[i]) {
+      currentHash = hash([currentLeaf, currentHash]);
+    } else currentHash = hash([currentHash, currentLeaf]);
   });
   return currentHash == root;
 }
@@ -226,16 +231,37 @@ function formatForCircom(proof) {
   return circomProof;
 }
 
+// src/utils/convert-to-circom-poseidon.ts
+var import_ffjavascript = require("@zk2/ffjavascript");
+var import_ethers2 = require("ethers");
+var PRIME = 21888242871839275222246405745257275088548364400416034343698204186575808495617n;
+function convertToValidPoseidon(str, reverse = false) {
+  const hash2 = (0, import_ethers2.keccak256)(str);
+  const hashBits = reverse ? bytesToBits(new Uint8Array(Buffer.from(hash2.slice(2, hash2.length), "hex").reverse())) : bytesToBits(new Uint8Array(Buffer.from(hash2.slice(2, hash2.length), "hex")));
+  const reduced = new import_ffjavascript.F1Field(PRIME).e(toNum(hashBits));
+  return smolPadding(`0x${reduced.toString(16)}`);
+}
+function toNum(s) {
+  let total = 0n;
+  for (let i = 0; i < s.length; i++) {
+    total += BigInt(s[i]) * 2n ** BigInt(i);
+  }
+  return total;
+}
+
 // src/index.ts
 var index_default = MiniMerkleTree;
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
+  PRIME,
   bytesToBits,
   concatLeaves,
   convertProofToBits,
+  convertToValidPoseidon,
   formatForCircom,
   smolPadding,
   sortAndConcatLeaves,
-  sortLeavesInAscOrder
+  sortLeavesInAscOrder,
+  toNum
 });
 //# sourceMappingURL=index.js.map

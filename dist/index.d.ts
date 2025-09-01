@@ -40,4 +40,8 @@ declare function smolPadding(str: string): string;
 
 declare function convertProofToBits(proof: string): number[];
 
-export { bytesToBits, concatLeaves, convertProofToBits, MiniMerkleTree as default, formatForCircom, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder };
+declare const PRIME = 21888242871839275222246405745257275088548364400416034343698204186575808495617n;
+declare function convertToValidPoseidon(str: string, reverse?: boolean): string;
+declare function toNum(s: number[]): BigInt;
+
+export { PRIME, bytesToBits, concatLeaves, convertProofToBits, convertToValidPoseidon, MiniMerkleTree as default, formatForCircom, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder, toNum };

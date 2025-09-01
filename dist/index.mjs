@@ -84,7 +84,7 @@ function generateProofForLeaf(leaf) {
         siblingLeaf = getSiblingLeaf(leavesAtDepth, currentLeaf);
       }
     }
-    directions.push(getLeafDir(siblingLeaf, currentLeaf));
+    directions.push(getLeafDir(currentLeaf, siblingLeaf));
     proof.push(siblingLeaf);
     currentLeaf = hash(sortLeavesInAscOrder(currentLeaf, siblingLeaf));
   }
@@ -103,8 +103,10 @@ function getSiblingLeaf(leaves, leaf) {
 function verifyMerkleProof(root, leaf, merkleProof) {
   const { proof, directions } = merkleProof;
   let currentHash = leaf;
-  proof.forEach(function(currentLeaf) {
-    currentHash = hash(sortLeavesInAscOrder(currentLeaf, currentHash));
+  proof.forEach(function(currentLeaf, i) {
+    if (directions[i]) {
+      currentHash = hash([currentLeaf, currentHash]);
+    } else currentHash = hash([currentHash, currentLeaf]);
   });
   return currentHash == root;
 }
@@ -183,16 +185,37 @@ function formatForCircom(proof) {
   return circomProof;
 }
 
+// src/utils/convert-to-circom-poseidon.ts
+import { F1Field } from "@zk2/ffjavascript";
+import { keccak256 } from "ethers";
+var PRIME = 21888242871839275222246405745257275088548364400416034343698204186575808495617n;
+function convertToValidPoseidon(str, reverse = false) {
+  const hash2 = keccak256(str);
+  const hashBits = reverse ? bytesToBits(new Uint8Array(Buffer.from(hash2.slice(2, hash2.length), "hex").reverse())) : bytesToBits(new Uint8Array(Buffer.from(hash2.slice(2, hash2.length), "hex")));
+  const reduced = new F1Field(PRIME).e(toNum(hashBits));
+  return smolPadding(`0x${reduced.toString(16)}`);
+}
+function toNum(s) {
+  let total = 0n;
+  for (let i = 0; i < s.length; i++) {
+    total += BigInt(s[i]) * 2n ** BigInt(i);
+  }
+  return total;
+}
+
 // src/index.ts
 var index_default = MiniMerkleTree;
 export {
+  PRIME,
   bytesToBits,
   concatLeaves,
   convertProofToBits,
+  convertToValidPoseidon,
   index_default as default,
   formatForCircom,
   smolPadding,
   sortAndConcatLeaves,
-  sortLeavesInAscOrder
+  sortLeavesInAscOrder,
+  toNum
 };
 //# sourceMappingURL=index.mjs.map
