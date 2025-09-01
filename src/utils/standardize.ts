@@ -5,7 +5,8 @@ import { smolPadding } from "./smol-padding";
 
 export const PRIME = 21888242871839275222246405745257275088548364400416034343698204186575808495617n
 
-export function convertToValidPoseidon(str: string, reverse: boolean = false) {
+// Use this to conver the deposit key to a valid poseidon field bytes32.
+export function standardizeToPoseidon(str: string, reverse: boolean = false) {
     const hash = keccak256(str)
     const hashBits = reverse ? bytesToBits(new Uint8Array(Buffer.from(hash.slice(2, hash.length), "hex").reverse()))
         : bytesToBits(new Uint8Array(Buffer.from(hash.slice(2, hash.length), "hex")))

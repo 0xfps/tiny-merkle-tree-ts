@@ -34,12 +34,12 @@ __export(index_exports, {
   bytesToBits: () => bytesToBits,
   concatLeaves: () => concatLeaves,
   convertProofToBits: () => convertProofToBits,
-  convertToValidPoseidon: () => convertToValidPoseidon,
   default: () => index_default,
   formatForCircom: () => formatForCircom,
   smolPadding: () => smolPadding,
   sortAndConcatLeaves: () => sortAndConcatLeaves,
   sortLeavesInAscOrder: () => sortLeavesInAscOrder,
+  standardizeToPoseidon: () => standardizeToPoseidon,
   toNum: () => toNum
 });
 module.exports = __toCommonJS(index_exports);
@@ -231,11 +231,11 @@ function formatForCircom(proof) {
   return circomProof;
 }
 
-// src/utils/convert-to-circom-poseidon.ts
+// src/utils/standardize.ts
 var import_ffjavascript = require("@zk2/ffjavascript");
 var import_ethers2 = require("ethers");
 var PRIME = 21888242871839275222246405745257275088548364400416034343698204186575808495617n;
-function convertToValidPoseidon(str, reverse = false) {
+function standardizeToPoseidon(str, reverse = false) {
   const hash2 = (0, import_ethers2.keccak256)(str);
   const hashBits = reverse ? bytesToBits(new Uint8Array(Buffer.from(hash2.slice(2, hash2.length), "hex").reverse())) : bytesToBits(new Uint8Array(Buffer.from(hash2.slice(2, hash2.length), "hex")));
   const reduced = new import_ffjavascript.F1Field(PRIME).e(toNum(hashBits));
@@ -257,11 +257,11 @@ var index_default = MiniMerkleTree;
   bytesToBits,
   concatLeaves,
   convertProofToBits,
-  convertToValidPoseidon,
   formatForCircom,
   smolPadding,
   sortAndConcatLeaves,
   sortLeavesInAscOrder,
+  standardizeToPoseidon,
   toNum
 });
 //# sourceMappingURL=index.js.map

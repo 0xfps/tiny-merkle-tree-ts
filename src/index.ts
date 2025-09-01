@@ -4,11 +4,11 @@ import formatForCircom from "./utils/format-for-circom";
 import bytesToBits from "./utils/bytes-to-bits";
 import { smolPadding } from "./utils/smol-padding";
 import { convertProofToBits } from "./utils/convert-proof-leaf-to-bits";
-import { PRIME, convertToValidPoseidon, toNum } from "./utils/convert-to-circom-poseidon";
+import { PRIME, standardizeToPoseidon, toNum } from "./utils/standardize";
 
 export {
     PRIME,
-    convertToValidPoseidon,
+    standardizeToPoseidon,
     toNum,
     formatForCircom,
     sortAndConcatLeaves,
