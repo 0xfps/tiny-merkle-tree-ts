@@ -3,13 +3,15 @@ import { hash } from "../utils/hash";
 
 export function verifyMerkleProof(root: string, leaf: string, merkleProof: Proof): boolean {
     const { proof, directions } = merkleProof
-
-    let currentHash = leaf
-    proof.forEach(function (currentLeaf, i) {
+    
+    let currentLeaf = leaf
+    proof.forEach(function (sibling, i) {
+        // if (1) hash(sibling, currentLeaf)
+        // if (0) hash(currentLeaf, sibling)
         if (directions[i]) {
-            currentHash = hash([currentLeaf, currentHash])
-        } else currentHash = hash([currentHash, currentLeaf])
+            currentLeaf = hash([sibling, currentLeaf])
+        } else currentLeaf = hash([currentLeaf, sibling])
     })
 
-    return currentHash == root
+    return currentLeaf == root
 }

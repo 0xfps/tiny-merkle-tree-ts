@@ -14,7 +14,8 @@ export function concatLeaves(leaf1: string, leaf2: string): string {
 }
 
 // If leaf1 is less than leaf2, the dir should be 0, meaning it comes first.
-// Else, dir is 1, meaning it comes after. This will be needed for Circom.
+// Else, dir is 1, meaning it comes after. This will be needed for Circom and
+// Merkle Proof generation.
 export function getLeafDir(leaf1: string, leaf2: string) {
     return leaf1 < leaf2 ? 0 : 1;
 }
