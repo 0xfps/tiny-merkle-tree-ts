@@ -34,14 +34,34 @@ interface CircomProof {
 
 declare function formatForCircom(proof: Proof): CircomProof;
 
-declare function bytesToBits(b: Uint8Array<ArrayBuffer>): number[];
+declare function bytesToBits(bytes: Uint8Array<ArrayBuffer>): number[];
 
+/**
+ * Poseidon hash of some numbers, e.g 1 will yield a 31-byte string.
+ * This function pads all leaves to 32 bytes before being used in the tree.
+ * On the contract, it won't be an issue.
+ * Pad up all leaves before calling new MiniMerkleTree and after every hash.
+ * Leaves coming from the contract are already 32 byte padded.
+ * If the leaf is already complete, nothing happens.
+ */
 declare function smolPadding(str: string): string;
 
 declare function convertProofToBits(proof: string): number[];
 
 declare const PRIME = 21888242871839275222246405745257275088548364400416034343698204186575808495617n;
+/**
+ * Converts the hash of a given string, usually hex to it's Poseidon field number
+ * equivalent. Some hex strings are too large that their hashes cannot fit within
+ * the valid field, and this causes bugs when computing merkle trees in Circom.
+ *
+ * Ideally, the use case of this function is not in the merkle tree, leaves coming
+ * in are already standardized from the contract. However, when computing
+ * the deposit key, this function will be used to properly calculate the Poseidon
+ * equivalent of a given deposit key (str). The equivalent is used as the deposit
+ * commitment on the smart contract.
+ */
 declare function standardizeToPoseidon(str: string, reverse?: boolean): string;
-declare function toNum(s: number[]): BigInt;
+
+declare function toNum(bits: number[]): BigInt;
 
 export { PRIME, bytesToBits, concatLeaves, convertProofToBits, MiniMerkleTree as default, formatForCircom, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder, standardizeToPoseidon, toNum };

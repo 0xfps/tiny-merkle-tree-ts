@@ -148,13 +148,13 @@ function getSiblingLeaf(leaves, leaf) {
 // src/tree/verify-merkle-proof.ts
 function verifyMerkleProof(root, leaf, merkleProof) {
   const { proof, directions } = merkleProof;
-  let currentHash = leaf;
-  proof.forEach(function(currentLeaf, i) {
+  let currentLeaf = leaf;
+  proof.forEach(function(sibling, i) {
     if (directions[i]) {
-      currentHash = hash([currentLeaf, currentHash]);
-    } else currentHash = hash([currentHash, currentLeaf]);
+      currentLeaf = hash([sibling, currentLeaf]);
+    } else currentLeaf = hash([currentLeaf, sibling]);
   });
-  return currentHash == root;
+  return currentLeaf == root;
 }
 
 // src/tree/index.ts
@@ -162,7 +162,6 @@ var MiniMerkleTree = class {
   tree;
   root;
   depth;
-  // Populate tree here.
   constructor(leaves) {
     const { tree, root, depth } = buildTree(leaves);
     this.tree = tree;
@@ -186,11 +185,11 @@ var MiniMerkleTree = class {
 var import_ethers = require("ethers");
 
 // src/utils/bytes-to-bits.ts
-function bytesToBits(b) {
+function bytesToBits(bytes) {
   const bits = [];
-  for (let i = 0; i < b.length; i++) {
+  for (let i = 0; i < bytes.length; i++) {
     for (let j = 0; j < 8; j++) {
-      if ((Number(b[i]) & 1 << j) > 0) {
+      if ((Number(bytes[i]) & 1 << j) > 0) {
         bits.push(1);
       } else {
         bits.push(0);
@@ -234,19 +233,23 @@ function formatForCircom(proof) {
 // src/utils/standardize.ts
 var import_ffjavascript = require("@zk2/ffjavascript");
 var import_ethers2 = require("ethers");
+
+// src/utils/bits-to-num.ts
+function toNum(bits) {
+  let total = 0n;
+  for (let i = 0; i < bits.length; i++) {
+    total += BigInt(bits[i]) * 2n ** BigInt(i);
+  }
+  return total;
+}
+
+// src/utils/standardize.ts
 var PRIME = 21888242871839275222246405745257275088548364400416034343698204186575808495617n;
 function standardizeToPoseidon(str, reverse = false) {
   const hash2 = (0, import_ethers2.keccak256)(str);
   const hashBits = reverse ? bytesToBits(new Uint8Array(Buffer.from(hash2.slice(2, hash2.length), "hex").reverse())) : bytesToBits(new Uint8Array(Buffer.from(hash2.slice(2, hash2.length), "hex")));
   const reduced = new import_ffjavascript.F1Field(PRIME).e(toNum(hashBits));
   return smolPadding(`0x${reduced.toString(16)}`);
-}
-function toNum(s) {
-  let total = 0n;
-  for (let i = 0; i < s.length; i++) {
-    total += BigInt(s[i]) * 2n ** BigInt(i);
-  }
-  return total;
 }
 
 // src/index.ts

@@ -9,7 +9,6 @@ export default class MiniMerkleTree implements MerkleTreeInterface {
     root: string
     depth: number
 
-    // Populate tree here.
     public constructor(leaves: string[]) {
         const { tree, root, depth } = buildTree(leaves)
 

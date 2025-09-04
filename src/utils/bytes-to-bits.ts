@@ -1,13 +1,16 @@
-export default function bytesToBits(b: Uint8Array<ArrayBuffer>) {
-    const bits = [];
-    for (let i = 0; i < b.length; i++) {
+// Converts the bytes in a Uint8Array to the equivalent bits array.
+export default function bytesToBits(bytes: Uint8Array<ArrayBuffer>): number[] {
+    const bits: number[] = [];
+
+    for (let i = 0; i < bytes.length; i++) {
         for (let j = 0; j < 8; j++) {
-            if ((Number(b[i]) & (1 << j)) > 0) {
+            if ((Number(bytes[i]) & (1 << j)) > 0) {
                 bits.push(1);
             } else {
                 bits.push(0);
             }
         }
     }
+    
     return bits
 }
