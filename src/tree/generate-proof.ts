@@ -8,7 +8,7 @@ export function generateProofForLeaf(this: Tree, leaf: string): Proof {
     const { tree } = this
 
     let currentLeaf = leaf;
-    let treeWithoutRoot = tree.slice(1, tree.length)
+    let treeWithoutRoot = tree.slice(1)
     let lenTreeWithNoRoot = treeWithoutRoot.length
 
     // If the leaf we're looking for is at any point not in

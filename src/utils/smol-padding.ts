@@ -7,7 +7,8 @@
  * If the leaf is already complete, nothing happens.
  */
 export function smolPadding(str: string): string {
+    if (str.length > 66) throw new Error("Expected a bytes32 string.")
     const lenRem = 64 - (str.length - 2);
     const pad0 = "0".repeat(lenRem)
-    return `0x${pad0}${str.slice(2, str.length)}`
+    return `0x${pad0}${str.slice(2)}`
 }

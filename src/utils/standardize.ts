@@ -21,8 +21,8 @@ export const PRIME = 21888242871839275222246405745257275088548364400416034343698
  */
 export function standardizeToPoseidon(str: string, reverse: boolean = false): string {
     const hash = keccak256(str)
-    const hashBits = reverse ? bytesToBits(new Uint8Array(Buffer.from(hash.slice(2, hash.length), "hex").reverse()))
-        : bytesToBits(new Uint8Array(Buffer.from(hash.slice(2, hash.length), "hex")))
+    const hashBits = reverse ? bytesToBits(new Uint8Array(Buffer.from(hash.slice(2), "hex").reverse()))
+        : bytesToBits(new Uint8Array(Buffer.from(hash.slice(2), "hex")))
     const reduced = new F1Field(PRIME).e(toNum(hashBits))
     return smolPadding(`0x${reduced.toString(16)}`)
 }

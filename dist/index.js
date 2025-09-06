@@ -46,9 +46,10 @@ module.exports = __toCommonJS(index_exports);
 
 // src/utils/smol-padding.ts
 function smolPadding(str) {
+  if (str.length > 66) throw new Error("Expected a bytes32 string.");
   const lenRem = 64 - (str.length - 2);
   const pad0 = "0".repeat(lenRem);
-  return `0x${pad0}${str.slice(2, str.length)}`;
+  return `0x${pad0}${str.slice(2)}`;
 }
 
 // src/utils/leaf-actions.ts
@@ -111,7 +112,7 @@ var import_strict = __toESM(require("assert/strict"));
 function generateProofForLeaf(leaf) {
   const { tree } = this;
   let currentLeaf = leaf;
-  let treeWithoutRoot = tree.slice(1, tree.length);
+  let treeWithoutRoot = tree.slice(1);
   let lenTreeWithNoRoot = treeWithoutRoot.length;
   if (treeWithoutRoot[lenTreeWithNoRoot - 1].indexOf(leaf) == -1) {
     throw new Error("Leaf not in tree!");
@@ -201,7 +202,7 @@ function bytesToBits(bytes) {
 
 // src/utils/convert-proof-leaf-to-bits.ts
 function convertProofToBits(proof) {
-  const hexProof = proof.slice(2, proof.length);
+  const hexProof = proof.slice(2);
   const uint8Array = new Uint8Array(Buffer.from(hexProof, "hex").reverse());
   return bytesToBits(uint8Array);
 }
@@ -247,7 +248,7 @@ function toNum(bits) {
 var PRIME = 21888242871839275222246405745257275088548364400416034343698204186575808495617n;
 function standardizeToPoseidon(str, reverse = false) {
   const hash2 = (0, import_ethers2.keccak256)(str);
-  const hashBits = reverse ? bytesToBits(new Uint8Array(Buffer.from(hash2.slice(2, hash2.length), "hex").reverse())) : bytesToBits(new Uint8Array(Buffer.from(hash2.slice(2, hash2.length), "hex")));
+  const hashBits = reverse ? bytesToBits(new Uint8Array(Buffer.from(hash2.slice(2), "hex").reverse())) : bytesToBits(new Uint8Array(Buffer.from(hash2.slice(2), "hex")));
   const reduced = new import_ffjavascript.F1Field(PRIME).e(toNum(hashBits));
   return smolPadding(`0x${reduced.toString(16)}`);
 }
