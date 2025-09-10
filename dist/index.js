@@ -38,6 +38,7 @@ __export(index_exports, {
   formatForCircom: () => formatForCircom,
   generateRandomNumber: () => generateRandomNumber,
   getRandomNullifier: () => getRandomNullifier,
+  hashNum: () => hashNum,
   smolPadding: () => smolPadding,
   sortAndConcatLeaves: () => sortAndConcatLeaves,
   sortLeavesInAscOrder: () => sortLeavesInAscOrder,
@@ -76,6 +77,9 @@ function sortAndConcatLeaves(leaf1, leaf2) {
 var import_poseidon_hash = require("poseidon-hash");
 function hash(leaves) {
   return smolPadding(`0x${(0, import_poseidon_hash.poseidon)(leaves).toString(16)}`);
+}
+function hashNum(num) {
+  return smolPadding(`0x${(0, import_poseidon_hash.poseidon)(num).toString(16)}`);
 }
 
 // src/tree/build-tree.ts
@@ -300,6 +304,7 @@ var index_default = MiniMerkleTree;
   formatForCircom,
   generateRandomNumber,
   getRandomNullifier,
+  hashNum,
   smolPadding,
   sortAndConcatLeaves,
   sortLeavesInAscOrder,

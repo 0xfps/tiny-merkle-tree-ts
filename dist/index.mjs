@@ -29,6 +29,9 @@ import { poseidon } from "poseidon-hash";
 function hash(leaves) {
   return smolPadding(`0x${poseidon(leaves).toString(16)}`);
 }
+function hashNum(num) {
+  return smolPadding(`0x${poseidon(num).toString(16)}`);
+}
 
 // src/tree/build-tree.ts
 function buildTree(leaves) {
@@ -252,6 +255,7 @@ export {
   formatForCircom,
   generateRandomNumber,
   getRandomNullifier,
+  hashNum,
   smolPadding,
   sortAndConcatLeaves,
   sortLeavesInAscOrder,

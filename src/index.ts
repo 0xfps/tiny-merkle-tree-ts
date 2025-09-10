@@ -8,6 +8,7 @@ import { PRIME, standardizeToPoseidon } from "./utils/standardize";
 import { toNum } from "./utils/bits-to-num";
 import { generateRandomNumber } from "./utils/generate-random-number";
 import { getRandomNullifier } from "./utils/get-random-nullifier";
+import { hashNum } from "./utils/hash";
 
 export {
     PRIME,
@@ -21,7 +22,8 @@ export {
     smolPadding,
     convertProofToBits,
     generateRandomNumber,
-    getRandomNullifier
+    getRandomNullifier,
+    hashNum
 }
 
 export default MiniMerkleTree
