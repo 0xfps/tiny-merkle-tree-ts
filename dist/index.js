@@ -36,6 +36,9 @@ __export(index_exports, {
   convertProofToBits: () => convertProofToBits,
   default: () => index_default,
   formatForCircom: () => formatForCircom,
+  generateRandomNumber: () => generateRandomNumber,
+  getRandomNullifier: () => getRandomNullifier,
+  hashNums: () => hashNums,
   smolPadding: () => smolPadding,
   sortAndConcatLeaves: () => sortAndConcatLeaves,
   sortLeavesInAscOrder: () => sortLeavesInAscOrder,
@@ -74,6 +77,9 @@ function sortAndConcatLeaves(leaf1, leaf2) {
 var import_poseidon_hash = require("poseidon-hash");
 function hash(leaves) {
   return smolPadding(`0x${(0, import_poseidon_hash.poseidon)(leaves).toString(16)}`);
+}
+function hashNums(num) {
+  return smolPadding(`0x${(0, import_poseidon_hash.poseidon)(num).toString(16)}`);
 }
 
 // src/tree/build-tree.ts
@@ -253,6 +259,40 @@ function standardizeToPoseidon(str, reverse = false) {
   return smolPadding(`0x${reduced.toString(16)}`);
 }
 
+// src/utils/generate-random-number.ts
+var import_hexyjs = require("hexyjs");
+var import_randomstring = __toESM(require("randomstring"));
+var import_pure_rand = __toESM(require("pure-rand"));
+var LOWER_LIMIT = 1000000000000000n;
+var UPPER_LIMIT = PRIME - BigInt(1e9);
+function generateRandomNumber() {
+  const randomString = import_randomstring.default.generate({
+    length: 8,
+    charset: ["alphanumeric"]
+  });
+  const seed = Number(`0x${(0, import_hexyjs.strToHex)(randomString)}`);
+  const rng = import_pure_rand.default.xoroshiro128plus(seed);
+  const randomNumber = import_pure_rand.default.unsafeUniformBigIntDistribution(LOWER_LIMIT, UPPER_LIMIT, rng);
+  return randomNumber;
+}
+
+// src/utils/get-random-nullifier.ts
+var import_hexyjs2 = require("hexyjs");
+var import_randomstring2 = __toESM(require("randomstring"));
+var import_pure_rand2 = __toESM(require("pure-rand"));
+var LOWER_LIMIT2 = 1;
+var UPPER_LIMIT2 = Number.MAX_SAFE_INTEGER;
+function getRandomNullifier() {
+  const randomString = import_randomstring2.default.generate({
+    length: 8,
+    charset: ["alphanumeric"]
+  });
+  const seed = Number(`0x${(0, import_hexyjs2.strToHex)(randomString)}`);
+  const rng = import_pure_rand2.default.xoroshiro128plus(seed);
+  const nullifier = import_pure_rand2.default.unsafeUniformIntDistribution(LOWER_LIMIT2, UPPER_LIMIT2, rng);
+  return nullifier;
+}
+
 // src/index.ts
 var index_default = MiniMerkleTree;
 // Annotate the CommonJS export names for ESM import in node:
@@ -262,6 +302,9 @@ var index_default = MiniMerkleTree;
   concatLeaves,
   convertProofToBits,
   formatForCircom,
+  generateRandomNumber,
+  getRandomNullifier,
+  hashNums,
   smolPadding,
   sortAndConcatLeaves,
   sortLeavesInAscOrder,
