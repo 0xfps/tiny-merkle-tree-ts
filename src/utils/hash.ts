@@ -5,6 +5,6 @@ export function hash(leaves: string[]): string {
     return smolPadding(`0x${poseidon(leaves).toString(16)}`)
 }
 
-export function hashNum(num: number[]): string {
+export function hashNums(num: number[]): string {
     return smolPadding(`0x${poseidon(num).toString(16)}`)
 }

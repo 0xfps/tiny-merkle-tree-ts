@@ -68,6 +68,6 @@ declare function generateRandomNumber(): BigInt;
 
 declare function getRandomNullifier(): number;
 
-declare function hashNum(num: number[]): string;
+declare function hashNums(num: number[]): string;
 
-export { PRIME, bytesToBits, concatLeaves, convertProofToBits, MiniMerkleTree as default, formatForCircom, generateRandomNumber, getRandomNullifier, hashNum, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder, standardizeToPoseidon, toNum };
+export { PRIME, bytesToBits, concatLeaves, convertProofToBits, MiniMerkleTree as default, formatForCircom, generateRandomNumber, getRandomNullifier, hashNums, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder, standardizeToPoseidon, toNum };

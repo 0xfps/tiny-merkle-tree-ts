@@ -29,7 +29,7 @@ import { poseidon } from "poseidon-hash";
 function hash(leaves) {
   return smolPadding(`0x${poseidon(leaves).toString(16)}`);
 }
-function hashNum(num) {
+function hashNums(num) {
   return smolPadding(`0x${poseidon(num).toString(16)}`);
 }
 
@@ -255,7 +255,7 @@ export {
   formatForCircom,
   generateRandomNumber,
   getRandomNullifier,
-  hashNum,
+  hashNums,
   smolPadding,
   sortAndConcatLeaves,
   sortLeavesInAscOrder,
