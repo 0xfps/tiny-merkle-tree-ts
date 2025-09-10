@@ -207,6 +207,40 @@ function standardizeToPoseidon(str, reverse = false) {
   return smolPadding(`0x${reduced.toString(16)}`);
 }
 
+// src/utils/generate-random-number.ts
+import { strToHex } from "hexyjs";
+import Randomstring from "randomstring";
+import prand from "pure-rand";
+var LOWER_LIMIT = 1000000000000000n;
+var UPPER_LIMIT = PRIME - BigInt(1e9);
+function generateRandomNumber() {
+  const randomString = Randomstring.generate({
+    length: 8,
+    charset: ["alphanumeric"]
+  });
+  const seed = Number(`0x${strToHex(randomString)}`);
+  const rng = prand.xoroshiro128plus(seed);
+  const randomNumber = prand.unsafeUniformBigIntDistribution(LOWER_LIMIT, UPPER_LIMIT, rng);
+  return randomNumber;
+}
+
+// src/utils/get-random-nullifier.ts
+import { strToHex as strToHex2 } from "hexyjs";
+import Randomstring2 from "randomstring";
+import prand2 from "pure-rand";
+var LOWER_LIMIT2 = 1;
+var UPPER_LIMIT2 = Number.MAX_SAFE_INTEGER;
+function getRandomNullifier() {
+  const randomString = Randomstring2.generate({
+    length: 8,
+    charset: ["alphanumeric"]
+  });
+  const seed = Number(`0x${strToHex2(randomString)}`);
+  const rng = prand2.xoroshiro128plus(seed);
+  const nullifier = prand2.unsafeUniformIntDistribution(LOWER_LIMIT2, UPPER_LIMIT2, rng);
+  return nullifier;
+}
+
 // src/index.ts
 var index_default = MiniMerkleTree;
 export {
@@ -216,6 +250,8 @@ export {
   convertProofToBits,
   index_default as default,
   formatForCircom,
+  generateRandomNumber,
+  getRandomNullifier,
   smolPadding,
   sortAndConcatLeaves,
   sortLeavesInAscOrder,

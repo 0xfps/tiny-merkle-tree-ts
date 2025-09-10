@@ -64,4 +64,8 @@ declare function standardizeToPoseidon(str: string, reverse?: boolean): string;
 
 declare function toNum(bits: number[]): BigInt;
 
-export { PRIME, bytesToBits, concatLeaves, convertProofToBits, MiniMerkleTree as default, formatForCircom, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder, standardizeToPoseidon, toNum };
+declare function generateRandomNumber(): BigInt;
+
+declare function getRandomNullifier(): number;
+
+export { PRIME, bytesToBits, concatLeaves, convertProofToBits, MiniMerkleTree as default, formatForCircom, generateRandomNumber, getRandomNullifier, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder, standardizeToPoseidon, toNum };

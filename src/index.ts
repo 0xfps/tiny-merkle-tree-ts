@@ -6,6 +6,8 @@ import { smolPadding } from "./utils/smol-padding";
 import { convertProofToBits } from "./utils/convert-proof-leaf-to-bits";
 import { PRIME, standardizeToPoseidon } from "./utils/standardize";
 import { toNum } from "./utils/bits-to-num";
+import { generateRandomNumber } from "./utils/generate-random-number";
+import { getRandomNullifier } from "./utils/get-random-nullifier";
 
 export {
     PRIME,
@@ -17,7 +19,9 @@ export {
     sortLeavesInAscOrder,
     bytesToBits,
     smolPadding,
-    convertProofToBits
+    convertProofToBits,
+    generateRandomNumber,
+    getRandomNullifier
 }
 
 export default MiniMerkleTree
