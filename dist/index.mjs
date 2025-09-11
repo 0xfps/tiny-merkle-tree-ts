@@ -308,6 +308,9 @@ function calculateFee(amount) {
 // src/contract-utils/max-withdrawal.ts
 function getMaxWithdrawalOnKey(key) {
   const { amount } = extractKeyMetadata(key);
+  return getMaxWithdrawalOnAmount(amount);
+}
+function getMaxWithdrawalOnAmount(amount) {
   const fee = calculateFee(amount);
   return BigInt(amount.toString()) - BigInt(fee.toString());
 }
@@ -324,6 +327,7 @@ export {
   generateDepositKey,
   generateRandomNumber,
   generatekeys,
+  getMaxWithdrawalOnAmount,
   getMaxWithdrawalOnKey,
   getRandomNullifier,
   hashNums,

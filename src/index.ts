@@ -10,7 +10,7 @@ import { generateRandomNumber } from "./utils/generate-random-number";
 import { getRandomNullifier } from "./utils/get-random-nullifier";
 import { hashNums } from "./utils/hash";
 import { generatekeys, generateDepositKey } from "./contract-utils/generate-keys";
-import { getMaxWithdrawalOnKey } from "./contract-utils/max-withdrawal";
+import { getMaxWithdrawalOnKey, getMaxWithdrawalOnAmount } from "./contract-utils/max-withdrawal";
 
 export {
     PRIME,
@@ -28,7 +28,8 @@ export {
     hashNums,
     generatekeys,
     generateDepositKey,
-    getMaxWithdrawalOnKey
+    getMaxWithdrawalOnKey,
+    getMaxWithdrawalOnAmount
 }
 
 export default MiniMerkleTree

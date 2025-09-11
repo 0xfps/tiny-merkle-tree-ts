@@ -39,6 +39,7 @@ __export(index_exports, {
   generateDepositKey: () => generateDepositKey,
   generateRandomNumber: () => generateRandomNumber,
   generatekeys: () => generatekeys,
+  getMaxWithdrawalOnAmount: () => getMaxWithdrawalOnAmount,
   getMaxWithdrawalOnKey: () => getMaxWithdrawalOnKey,
   getRandomNullifier: () => getRandomNullifier,
   hashNums: () => hashNums,
@@ -360,6 +361,9 @@ function calculateFee(amount) {
 // src/contract-utils/max-withdrawal.ts
 function getMaxWithdrawalOnKey(key) {
   const { amount } = extractKeyMetadata(key);
+  return getMaxWithdrawalOnAmount(amount);
+}
+function getMaxWithdrawalOnAmount(amount) {
   const fee = calculateFee(amount);
   return BigInt(amount.toString()) - BigInt(fee.toString());
 }
@@ -376,6 +380,7 @@ var index_default = MiniMerkleTree;
   generateDepositKey,
   generateRandomNumber,
   generatekeys,
+  getMaxWithdrawalOnAmount,
   getMaxWithdrawalOnKey,
   getRandomNullifier,
   hashNums,
