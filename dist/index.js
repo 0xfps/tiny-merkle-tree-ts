@@ -39,6 +39,7 @@ __export(index_exports, {
   generateDepositKey: () => generateDepositKey,
   generateRandomNumber: () => generateRandomNumber,
   generatekeys: () => generatekeys,
+  getMaxWithdrawalOnKey: () => getMaxWithdrawalOnKey,
   getRandomNullifier: () => getRandomNullifier,
   hashNums: () => hashNums,
   smolPadding: () => smolPadding,
@@ -349,6 +350,20 @@ function _encodePackAmount(amount) {
   return encodePackAmount;
 }
 
+// src/contract-utils/calculate-fee.ts
+function calculateFee(amount) {
+  const division = BigInt(amount.toString()) / 100n;
+  const quotient = division.toString().split(".")[0];
+  return BigInt(quotient);
+}
+
+// src/contract-utils/max-withdrawal.ts
+function getMaxWithdrawalOnKey(key) {
+  const { amount } = extractKeyMetadata(key);
+  const fee = calculateFee(amount);
+  return BigInt(amount.toString()) - BigInt(fee.toString());
+}
+
 // src/index.ts
 var index_default = MiniMerkleTree;
 // Annotate the CommonJS export names for ESM import in node:
@@ -361,6 +376,7 @@ var index_default = MiniMerkleTree;
   generateDepositKey,
   generateRandomNumber,
   generatekeys,
+  getMaxWithdrawalOnKey,
   getRandomNullifier,
   hashNums,
   smolPadding,
