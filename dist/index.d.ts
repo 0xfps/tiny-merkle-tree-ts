@@ -70,4 +70,12 @@ declare function getRandomNullifier(): number;
 
 declare function hashNums(num: number[]): string;
 
-export { PRIME, bytesToBits, concatLeaves, convertProofToBits, MiniMerkleTree as default, formatForCircom, generateRandomNumber, getRandomNullifier, hashNums, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder, standardizeToPoseidon, toNum };
+interface Keys {
+    withdrawalKey: string;
+    depositKey: string;
+}
+
+declare function generatekeys(asset: string, amount: BigInt, secretKey: string): Keys;
+declare function generateDepositKey(withdrawalKey: string, secretKey: string): string;
+
+export { PRIME, bytesToBits, concatLeaves, convertProofToBits, MiniMerkleTree as default, formatForCircom, generateDepositKey, generateRandomNumber, generatekeys, getRandomNullifier, hashNums, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder, standardizeToPoseidon, toNum };

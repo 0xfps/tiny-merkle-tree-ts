@@ -1,5 +1,5 @@
 export interface KeyMetadata {
     keyHash: string,
-    address: string,
+    asset: string,
     amount: BigInt
 }

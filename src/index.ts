@@ -9,6 +9,7 @@ import { toNum } from "./utils/bits-to-num";
 import { generateRandomNumber } from "./utils/generate-random-number";
 import { getRandomNullifier } from "./utils/get-random-nullifier";
 import { hashNums } from "./utils/hash";
+import { generatekeys, generateDepositKey } from "./contract-utils/generate-keys";
 
 export {
     PRIME,
@@ -23,7 +24,9 @@ export {
     convertProofToBits,
     generateRandomNumber,
     getRandomNullifier,
-    hashNums
+    hashNums,
+    generatekeys,
+    generateDepositKey
 }
 
 export default MiniMerkleTree
