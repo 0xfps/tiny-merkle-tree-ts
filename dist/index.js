@@ -36,7 +36,9 @@ __export(index_exports, {
   convertProofToBits: () => convertProofToBits,
   default: () => index_default,
   formatForCircom: () => formatForCircom,
+  generateDepositKey: () => generateDepositKey,
   generateRandomNumber: () => generateRandomNumber,
+  generatekeys: () => generatekeys,
   getRandomNullifier: () => getRandomNullifier,
   hashNums: () => hashNums,
   smolPadding: () => smolPadding,
@@ -293,6 +295,60 @@ function getRandomNullifier() {
   return nullifier;
 }
 
+// src/contract-utils/generate-keys.ts
+var import_ethers3 = require("ethers");
+
+// src/utils/hexify.ts
+function hexify(str) {
+  return `0x${str}`;
+}
+
+// src/contract-utils/generate-keys.ts
+var import_hexyjs3 = require("hexyjs");
+
+// src/utils/make-even.ts
+function makeEven(str) {
+  return str.length % 2 == 1 ? `0${str}` : str;
+}
+
+// src/contract-utils/extract-key-metadata.ts
+function extractKeyMetadata(key) {
+  const keyHash = key.slice(0, 65);
+  const asset = `0x${key.slice(66, 105)}`;
+  const amount = BigInt(`0x${key.slice(106)}`);
+  return { keyHash, asset, amount };
+}
+
+// src/contract-utils/generate-keys.ts
+function generatekeys(asset, amount, secretKey) {
+  const withdrawalKey = generateWithdrawalKey(asset, amount, secretKey);
+  const depositKey = generateDepositKey(withdrawalKey, secretKey);
+  return { withdrawalKey, depositKey };
+}
+function generateWithdrawalKey(asset, amount, secretKey) {
+  const entropy = makeEven(generateRandomNumber().toString(16));
+  const hexSecretKey = (0, import_hexyjs3.strToHex)(secretKey);
+  const withdrawalKeyHash = (0, import_ethers3.keccak256)(`${hexify(entropy)}${hexSecretKey}`);
+  const withdrawalKey = `${withdrawalKeyHash}${_encodePackAsset(asset)}${_encodePackAmount(amount)}`;
+  return withdrawalKey;
+}
+function generateDepositKey(withdrawalKey, secretKey) {
+  const { asset, amount } = extractKeyMetadata(withdrawalKey);
+  const hexSecretKey = (0, import_hexyjs3.strToHex)(secretKey);
+  const withdrawalKeyConcat = `${withdrawalKey}${hexSecretKey}`;
+  const depositKeyHash = (0, import_ethers3.keccak256)(withdrawalKeyConcat);
+  const depositKey = `${depositKeyHash}${_encodePackAsset(asset)}${_encodePackAmount(amount)}`;
+  return depositKey;
+}
+function _encodePackAsset(asset) {
+  return asset.slice(2);
+}
+function _encodePackAmount(amount) {
+  const hexAmount = hexify(amount.toString(16));
+  const encodePackAmount = smolPadding(hexAmount).slice(2);
+  return encodePackAmount;
+}
+
 // src/index.ts
 var index_default = MiniMerkleTree;
 // Annotate the CommonJS export names for ESM import in node:
@@ -302,7 +358,9 @@ var index_default = MiniMerkleTree;
   concatLeaves,
   convertProofToBits,
   formatForCircom,
+  generateDepositKey,
   generateRandomNumber,
+  generatekeys,
   getRandomNullifier,
   hashNums,
   smolPadding,

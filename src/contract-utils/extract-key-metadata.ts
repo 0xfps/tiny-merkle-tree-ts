@@ -9,8 +9,8 @@ import { KeyMetadata } from "../../interfaces/key-metadata";
 export function extractKeyMetadata(key: string): KeyMetadata {
     // Including 0x, bytes32 stretches to 66 characters.
     const keyHash = key.slice(0, 65)
-    const address = `0x${key.slice(66, 105)}`
+    const asset = `0x${key.slice(66, 105)}`
     const amount = BigInt(`0x${key.slice(106)}`)
 
-    return { keyHash, address, amount }
+    return { keyHash, asset, amount }
 }
