@@ -262,8 +262,8 @@ function makeEven(str) {
 
 // src/contract-utils/extract-key-metadata.ts
 function extractKeyMetadata(key) {
-  const keyHash = key.slice(0, 65);
-  const asset = `0x${key.slice(66, 105)}`;
+  const keyHash = key.slice(0, 66);
+  const asset = `0x${key.slice(66, 106)}`;
   const amount = BigInt(`0x${key.slice(106)}`);
   return { keyHash, asset, amount };
 }
