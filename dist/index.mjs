@@ -298,6 +298,23 @@ function _encodePackAmount(amount) {
   return encodePackAmount;
 }
 
+// src/contract-utils/calculate-fee.ts
+function calculateFee(amount) {
+  const division = BigInt(amount.toString()) / 100n;
+  const quotient = division.toString().split(".")[0];
+  return BigInt(quotient);
+}
+
+// src/contract-utils/max-withdrawal.ts
+function getMaxWithdrawalOnKey(key) {
+  const { amount } = extractKeyMetadata(key);
+  return getMaxWithdrawalOnAmount(amount);
+}
+function getMaxWithdrawalOnAmount(amount) {
+  const fee = calculateFee(amount);
+  return BigInt(amount.toString()) - BigInt(fee.toString());
+}
+
 // src/index.ts
 var index_default = MiniMerkleTree;
 export {
@@ -310,6 +327,8 @@ export {
   generateDepositKey,
   generateRandomNumber,
   generatekeys,
+  getMaxWithdrawalOnAmount,
+  getMaxWithdrawalOnKey,
   getRandomNullifier,
   hashNums,
   smolPadding,

@@ -78,4 +78,7 @@ interface Keys {
 declare function generatekeys(asset: string, amount: BigInt, secretKey: string): Keys;
 declare function generateDepositKey(withdrawalKey: string, secretKey: string): string;
 
-export { PRIME, bytesToBits, concatLeaves, convertProofToBits, MiniMerkleTree as default, formatForCircom, generateDepositKey, generateRandomNumber, generatekeys, getRandomNullifier, hashNums, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder, standardizeToPoseidon, toNum };
+declare function getMaxWithdrawalOnKey(key: string): BigInt;
+declare function getMaxWithdrawalOnAmount(amount: BigInt): BigInt;
+
+export { PRIME, bytesToBits, concatLeaves, convertProofToBits, MiniMerkleTree as default, formatForCircom, generateDepositKey, generateRandomNumber, generatekeys, getMaxWithdrawalOnAmount, getMaxWithdrawalOnKey, getRandomNullifier, hashNums, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder, standardizeToPoseidon, toNum };
