@@ -11,6 +11,12 @@ import { getRandomNullifier } from "./utils/get-random-nullifier";
 import { hashNums } from "./utils/hash";
 import { generatekeys, generateDepositKey } from "./contract-utils/generate-keys";
 import { getMaxWithdrawalOnKey, getMaxWithdrawalOnAmount } from "./contract-utils/max-withdrawal";
+import { CircomProof } from "../interfaces/circom-proof";
+import { KeyMetadata } from "../interfaces/key-metadata";
+import { Keys } from "../interfaces/keys";
+import { MerkleTreeInterface } from "../interfaces/merkle-tree";
+import { Proof } from "../interfaces/proof";
+import { TreeInterface } from "../interfaces/tree";
 
 export {
     PRIME,
@@ -29,7 +35,13 @@ export {
     generatekeys,
     generateDepositKey,
     getMaxWithdrawalOnKey,
-    getMaxWithdrawalOnAmount
+    getMaxWithdrawalOnAmount,
+    CircomProof,
+    KeyMetadata,
+    Keys,
+    MerkleTreeInterface,
+    Proof,
+    TreeInterface
 }
 
 export default MiniMerkleTree
