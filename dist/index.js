@@ -39,6 +39,7 @@ __export(index_exports, {
   generateDepositKey: () => generateDepositKey,
   generateRandomNumber: () => generateRandomNumber,
   generatekeys: () => generatekeys,
+  getInputObjects: () => getInputObjects,
   getMaxWithdrawalOnAmount: () => getMaxWithdrawalOnAmount,
   getMaxWithdrawalOnKey: () => getMaxWithdrawalOnKey,
   getRandomNullifier: () => getRandomNullifier,
@@ -368,6 +369,29 @@ function getMaxWithdrawalOnAmount(amount) {
   return BigInt(amount.toString()) - BigInt(fee.toString());
 }
 
+// src/utils/get-input-object.ts
+var import_hexyjs4 = require("hexyjs");
+function getInputObjects(withdrawalKey, standardizedKey, secretKey, tree) {
+  const root = convertProofToBits(tree.root);
+  const merkleProof = tree.generateMerkleProof(standardizedKey);
+  const { proof, directions, validBits } = formatForCircom(merkleProof);
+  const withdrawalKeyBits = bytesToBits(new Uint8Array(Buffer.from(withdrawalKey.slice(2), "hex")));
+  const secretKeyBits = bytesToBits(new Uint8Array(Buffer.from((0, import_hexyjs4.strToHex)(secretKey), "hex")));
+  const nullifier = getRandomNullifier();
+  const nullHash = hashNums([nullifier]);
+  const nullifierHash = convertProofToBits(nullHash);
+  return {
+    root,
+    withdrawalKey: withdrawalKeyBits,
+    secretKey: secretKeyBits,
+    directions,
+    validBits,
+    proof,
+    nullifier,
+    nullifierHash
+  };
+}
+
 // src/index.ts
 var index_default = MiniMerkleTree;
 // Annotate the CommonJS export names for ESM import in node:
@@ -380,6 +404,7 @@ var index_default = MiniMerkleTree;
   generateDepositKey,
   generateRandomNumber,
   generatekeys,
+  getInputObjects,
   getMaxWithdrawalOnAmount,
   getMaxWithdrawalOnKey,
   getRandomNullifier,
