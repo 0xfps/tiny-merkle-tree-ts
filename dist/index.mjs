@@ -315,6 +315,29 @@ function getMaxWithdrawalOnAmount(amount) {
   return BigInt(amount.toString()) - BigInt(fee.toString());
 }
 
+// src/utils/get-input-object.ts
+import { strToHex as strToHex4 } from "hexyjs";
+function getInputObjects(withdrawalKey, standardizedKey, secretKey, tree) {
+  const root = convertProofToBits(tree.root);
+  const merkleProof = tree.generateMerkleProof(standardizedKey);
+  const { proof, directions, validBits } = formatForCircom(merkleProof);
+  const withdrawalKeyBits = bytesToBits(new Uint8Array(Buffer.from(withdrawalKey.slice(2), "hex")));
+  const secretKeyBits = bytesToBits(new Uint8Array(Buffer.from(strToHex4(secretKey), "hex")));
+  const nullifier = getRandomNullifier();
+  const nullHash = hashNums([nullifier]);
+  const nullifierHash = convertProofToBits(nullHash);
+  return {
+    root,
+    withdrawalKey: withdrawalKeyBits,
+    secretKey: secretKeyBits,
+    directions,
+    validBits,
+    proof,
+    nullifier,
+    nullifierHash
+  };
+}
+
 // src/index.ts
 var index_default = MiniMerkleTree;
 export {
@@ -327,6 +350,7 @@ export {
   generateDepositKey,
   generateRandomNumber,
   generatekeys,
+  getInputObjects,
   getMaxWithdrawalOnAmount,
   getMaxWithdrawalOnKey,
   getRandomNullifier,
