@@ -145,15 +145,15 @@ import { encodeBytes32String } from "ethers";
 // src/utils/bytes-to-bits.ts
 function bytesToBits(bytes) {
   const bits = [];
-  for (let i = 0; i < bytes.length; i++) {
-    for (let j = 0; j < 8; j++) {
-      if ((Number(bytes[i]) & 1 << j) > 0) {
+  bytes.forEach(function(byte) {
+    for (let i = 0; i < 8; i++) {
+      if ((Number(byte) & 1 << i) > 0) {
         bits.push(1);
       } else {
         bits.push(0);
       }
     }
-  }
+  });
   return bits;
 }
 
@@ -193,11 +193,11 @@ import { F1Field } from "@zk2/ffjavascript";
 import { keccak256 } from "ethers";
 
 // src/utils/bits-to-num.ts
-function toNum(bits) {
+function bitsToNum(bits) {
   let total = 0n;
-  for (let i = 0; i < bits.length; i++) {
-    total += BigInt(bits[i]) * 2n ** BigInt(i);
-  }
+  bits.forEach(function(bit, index) {
+    total += BigInt(bit) * 2n ** BigInt(index);
+  });
   return total;
 }
 
@@ -206,7 +206,7 @@ var PRIME = 21888242871839275222246405745257275088548364400416034343698204186575
 function standardizeToPoseidon(str, reverse = false) {
   const hash2 = keccak256(str);
   const hashBits = reverse ? bytesToBits(new Uint8Array(Buffer.from(hash2.slice(2), "hex").reverse())) : bytesToBits(new Uint8Array(Buffer.from(hash2.slice(2), "hex")));
-  const reduced = new F1Field(PRIME).e(toNum(hashBits));
+  const reduced = new F1Field(PRIME).e(bitsToNum(hashBits));
   return smolPadding(`0x${reduced.toString(16)}`);
 }
 
@@ -342,6 +342,7 @@ function getInputObjects(withdrawalKey, standardizedKey, secretKey, tree) {
 var index_default = MiniMerkleTree;
 export {
   PRIME,
+  bitsToNum,
   bytesToBits,
   concatLeaves,
   convertProofToBits,
@@ -358,7 +359,6 @@ export {
   smolPadding,
   sortAndConcatLeaves,
   sortLeavesInAscOrder,
-  standardizeToPoseidon,
-  toNum
+  standardizeToPoseidon
 };
 //# sourceMappingURL=index.mjs.map

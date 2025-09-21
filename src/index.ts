@@ -5,7 +5,7 @@ import bytesToBits from "./utils/bytes-to-bits";
 import { smolPadding } from "./utils/smol-padding";
 import { convertProofToBits } from "./utils/convert-proof-leaf-to-bits";
 import { PRIME, standardizeToPoseidon } from "./utils/standardize";
-import { toNum } from "./utils/bits-to-num";
+import { bitsToNum } from "./utils/bits-to-num";
 import { generateRandomNumber } from "./utils/generate-random-number";
 import { getRandomNullifier } from "./utils/get-random-nullifier";
 import { hashNums } from "./utils/hash";
@@ -22,6 +22,7 @@ import { CircomInputObject } from "../interfaces/circom-input-object";
 
 export {
     PRIME,
+    bitsToNum,
     bytesToBits,
     concatLeaves,
     convertProofToBits,
@@ -38,7 +39,6 @@ export {
     sortAndConcatLeaves,
     sortLeavesInAscOrder,
     standardizeToPoseidon,
-    toNum,
     CircomInputObject,
     CircomProof,
     KeyMetadata,

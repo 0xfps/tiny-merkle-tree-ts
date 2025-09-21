@@ -1,11 +1,12 @@
 // Converts a given set of bits (0, 1) in an array to the 
 // number equivalent.
-export function toNum(bits: number[]): BigInt {
+// This follows the LSB ordering.
+export function bitsToNum(bits: number[]): BigInt {
     let total = 0n;
 
-    for (let i = 0; i < bits.length; i++) {
-        total += BigInt(bits[i]) * (2n ** BigInt(i));
-    }
+    bits.forEach(function (bit: number, index: number) {
+        total += BigInt(bit) * (2n ** BigInt(index)); 
+    })
 
     return total
 }

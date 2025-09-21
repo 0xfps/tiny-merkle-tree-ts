@@ -2,7 +2,7 @@ import { F1Field } from "@zk2/ffjavascript";
 import { keccak256 } from "ethers";
 import bytesToBits from "./bytes-to-bits";
 import { smolPadding } from "./smol-padding";
-import { toNum } from "./bits-to-num";
+import { bitsToNum } from "./bits-to-num";
 
 // Circom standard prime, used for Poseidon hash and Finite Field calculations.
 // Reference: https://docs.circom.io/circom-language/basic-operators/
@@ -23,6 +23,6 @@ export function standardizeToPoseidon(str: string, reverse: boolean = false): st
     const hash = keccak256(str)
     const hashBits = reverse ? bytesToBits(new Uint8Array(Buffer.from(hash.slice(2), "hex").reverse()))
         : bytesToBits(new Uint8Array(Buffer.from(hash.slice(2), "hex")))
-    const reduced = new F1Field(PRIME).e(toNum(hashBits))
+    const reduced = new F1Field(PRIME).e(bitsToNum(hashBits))
     return smolPadding(`0x${reduced.toString(16)}`)
 }

@@ -62,7 +62,7 @@ declare const PRIME = 2188824287183927522224640574525727508854836440041603434369
  */
 declare function standardizeToPoseidon(str: string, reverse?: boolean): string;
 
-declare function toNum(bits: number[]): BigInt;
+declare function bitsToNum(bits: number[]): BigInt;
 
 declare function generateRandomNumber(): BigInt;
 
@@ -106,4 +106,4 @@ interface TreeInterface {
     depth: number;
 }
 
-export { type CircomInputObject, type CircomProof, type KeyMetadata, type Keys, type MerkleTreeInterface, PRIME, type Proof, type TreeInterface, bytesToBits, concatLeaves, convertProofToBits, MiniMerkleTree as default, formatForCircom, generateDepositKey, generateRandomNumber, generatekeys, getInputObjects, getMaxWithdrawalOnAmount, getMaxWithdrawalOnKey, getRandomNullifier, hashNums, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder, standardizeToPoseidon, toNum };
+export { type CircomInputObject, type CircomProof, type KeyMetadata, type Keys, type MerkleTreeInterface, PRIME, type Proof, type TreeInterface, bitsToNum, bytesToBits, concatLeaves, convertProofToBits, MiniMerkleTree as default, formatForCircom, generateDepositKey, generateRandomNumber, generatekeys, getInputObjects, getMaxWithdrawalOnAmount, getMaxWithdrawalOnKey, getRandomNullifier, hashNums, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder, standardizeToPoseidon };
