@@ -1,4 +1,4 @@
-import MiniMerkleTree from "./tree";
+import TinyMerkleTree from "./tree";
 import sortAndConcatLeaves, { concatLeaves, sortLeavesInAscOrder } from "./utils/leaf-actions";
 import formatForCircom from "./utils/format-for-circom";
 import bytesToBits from "./utils/bytes-to-bits";
@@ -48,4 +48,4 @@ export {
     TreeInterface
 }
 
-export default MiniMerkleTree
+export default TinyMerkleTree

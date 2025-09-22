@@ -4,9 +4,9 @@
 export function bitsToNum(bits: number[]): BigInt {
     let total = 0n;
 
-    bits.forEach(function (bit: number, index: number) {
-        total += BigInt(bit) * (2n ** BigInt(index)); 
-    })
+    for (let i = 0; i < bits.length; i++) {
+        total += BigInt(bits[i]) * (2n ** BigInt(i));
+    }
 
     return total
 }

@@ -116,7 +116,7 @@ function verifyMerkleProof(root, leaf, merkleProof) {
 }
 
 // src/tree/index.ts
-var MiniMerkleTree = class {
+var TinyMerkleTree = class {
   tree;
   root;
   depth;
@@ -145,15 +145,15 @@ import { encodeBytes32String } from "ethers";
 // src/utils/bytes-to-bits.ts
 function bytesToBits(bytes) {
   const bits = [];
-  bytes.forEach(function(byte) {
-    for (let i = 0; i < 8; i++) {
-      if ((Number(byte) & 1 << i) > 0) {
+  for (let i = 0; i < bytes.length; i++) {
+    for (let j = 0; j < 8; j++) {
+      if ((Number(bytes[i]) & 1 << j) > 0) {
         bits.push(1);
       } else {
         bits.push(0);
       }
     }
-  });
+  }
   return bits;
 }
 
@@ -195,9 +195,9 @@ import { keccak256 } from "ethers";
 // src/utils/bits-to-num.ts
 function bitsToNum(bits) {
   let total = 0n;
-  bits.forEach(function(bit, index) {
-    total += BigInt(bit) * 2n ** BigInt(index);
-  });
+  for (let i = 0; i < bits.length; i++) {
+    total += BigInt(bits[i]) * 2n ** BigInt(i);
+  }
   return total;
 }
 
@@ -339,7 +339,7 @@ function getInputObjects(withdrawalKey, standardizedKey, secretKey, tree) {
 }
 
 // src/index.ts
-var index_default = MiniMerkleTree;
+var index_default = TinyMerkleTree;
 export {
   PRIME,
   bitsToNum,
