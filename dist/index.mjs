@@ -278,7 +278,8 @@ function extractKeyMetadata(key) {
 function generatekeys(asset, amount, secretKey) {
   const withdrawalKey = generateWithdrawalKey(asset, amount, secretKey);
   const depositKey = generateDepositKey(withdrawalKey, secretKey);
-  return { withdrawalKey, depositKey };
+  const standardizedKey = standardizeToPoseidon(depositKey);
+  return { withdrawalKey, depositKey, standardizedKey };
 }
 function generateWithdrawalKey(asset, amount, secretKey) {
   const entropy = makeEven(generateRandomNumber().toString(16));
@@ -293,7 +294,7 @@ function generateDepositKey(withdrawalKey, secretKey) {
   const withdrawalKeyConcat = `${withdrawalKey}${hexSecretKey}`;
   const depositKeyInPoseidon = standardizeToPoseidon(withdrawalKeyConcat);
   const depositKeyBits = bytesToBits(new Uint8Array(Buffer.from(depositKeyInPoseidon.slice(2), "hex")));
-  const depositKeyHash = `0x${bitsToNum(depositKeyBits).toString(16)}`;
+  const depositKeyHash = smolPadding(`0x${bitsToNum(depositKeyBits).toString(16)}`);
   const depositKey = `${depositKeyHash}${_encodePackAsset(asset)}${_encodePackAmount(amount)}`;
   return depositKey;
 }

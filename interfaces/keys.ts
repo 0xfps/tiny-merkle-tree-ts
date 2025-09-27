@@ -1,4 +1,5 @@
 export interface Keys {
     withdrawalKey: string,
-    depositKey: string
+    depositKey: string,
+    standardizedKey: string,
 }

@@ -13,8 +13,9 @@ import { bitsToNum } from "../utils/bits-to-num";
 export function generatekeys(asset: string, amount: BigInt, secretKey: string): Keys {
     const withdrawalKey = generateWithdrawalKey(asset, amount, secretKey)
     const depositKey = generateDepositKey(withdrawalKey, secretKey)
+    const standardizedKey = standardizeToPoseidon(depositKey)
 
-    return { withdrawalKey, depositKey }
+    return { withdrawalKey, depositKey, standardizedKey }
 }
 
 function generateWithdrawalKey(asset: string, amount: BigInt, secretKey: string): string {
@@ -33,7 +34,7 @@ export function generateDepositKey(withdrawalKey: string, secretKey: string): st
     const withdrawalKeyConcat = `${withdrawalKey}${hexSecretKey}`
     const depositKeyInPoseidon = standardizeToPoseidon(withdrawalKeyConcat)
     const depositKeyBits = bytesToBits(new Uint8Array(Buffer.from(depositKeyInPoseidon.slice(2), "hex")))
-    const depositKeyHash = `0x${bitsToNum(depositKeyBits).toString(16)}`
+    const depositKeyHash = smolPadding(`0x${bitsToNum(depositKeyBits).toString(16)}`)
 
     const depositKey = `${depositKeyHash}${_encodePackAsset(asset)}${_encodePackAmount(amount)}`
     return depositKey
