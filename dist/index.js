@@ -48,6 +48,7 @@ __export(index_exports, {
   smolPadding: () => smolPadding,
   sortAndConcatLeaves: () => sortAndConcatLeaves,
   sortLeavesInAscOrder: () => sortLeavesInAscOrder,
+  standardizeHashToPoseidon: () => standardizeHashToPoseidon,
   standardizeToPoseidon: () => standardizeToPoseidon
 });
 module.exports = __toCommonJS(index_exports);
@@ -257,10 +258,16 @@ function bitsToNum(bits) {
 
 // src/utils/standardize.ts
 var PRIME = 21888242871839275222246405745257275088548364400416034343698204186575808495617n;
-function standardizeToPoseidon(str, reverse = false) {
+function standardizeHashToPoseidon(str, reverse = false) {
   const hash2 = (0, import_ethers2.keccak256)(str);
   const hashBits = reverse ? bytesToBits(new Uint8Array(Buffer.from(hash2.slice(2), "hex").reverse())) : bytesToBits(new Uint8Array(Buffer.from(hash2.slice(2), "hex")));
   const reduced = new import_ffjavascript.F1Field(PRIME).e(bitsToNum(hashBits));
+  return smolPadding(`0x${reduced.toString(16)}`);
+}
+function standardizeToPoseidon(str) {
+  const uint8Array = new Uint8Array(Buffer.from(str.slice(2), "hex"));
+  const bigNumber = bitsToNum(bytesToBits(uint8Array));
+  const reduced = new import_ffjavascript.F1Field(PRIME).e(bigNumber);
   return smolPadding(`0x${reduced.toString(16)}`);
 }
 
@@ -339,7 +346,9 @@ function generateDepositKey(withdrawalKey, secretKey) {
   const { asset, amount } = extractKeyMetadata(withdrawalKey);
   const hexSecretKey = (0, import_hexyjs3.strToHex)(secretKey);
   const withdrawalKeyConcat = `${withdrawalKey}${hexSecretKey}`;
-  const depositKeyHash = (0, import_ethers3.keccak256)(withdrawalKeyConcat);
+  const depositKeyInPoseidon = standardizeToPoseidon(withdrawalKeyConcat);
+  const depositKeyBits = bytesToBits(new Uint8Array(Buffer.from(depositKeyInPoseidon.slice(2), "hex")));
+  const depositKeyHash = `0x${bitsToNum(depositKeyBits).toString(16)}`;
   const depositKey = `${depositKeyHash}${_encodePackAsset(asset)}${_encodePackAmount(amount)}`;
   return depositKey;
 }
@@ -413,6 +422,7 @@ var index_default = TinyMerkleTree;
   smolPadding,
   sortAndConcatLeaves,
   sortLeavesInAscOrder,
+  standardizeHashToPoseidon,
   standardizeToPoseidon
 });
 //# sourceMappingURL=index.js.map

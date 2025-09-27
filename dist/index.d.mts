@@ -60,7 +60,8 @@ declare const PRIME = 2188824287183927522224640574525727508854836440041603434369
  * equivalent of a given deposit key (str). The equivalent is used as the deposit
  * commitment on the smart contract.
  */
-declare function standardizeToPoseidon(str: string, reverse?: boolean): string;
+declare function standardizeHashToPoseidon(str: string, reverse?: boolean): string;
+declare function standardizeToPoseidon(str: string): string;
 
 declare function bitsToNum(bits: number[]): BigInt;
 
@@ -106,4 +107,4 @@ interface TreeInterface {
     depth: number;
 }
 
-export { type CircomInputObject, type CircomProof, type KeyMetadata, type Keys, type MerkleTreeInterface, PRIME, type Proof, type TreeInterface, bitsToNum, bytesToBits, concatLeaves, convertProofToBits, TinyMerkleTree as default, formatForCircom, generateDepositKey, generateRandomNumber, generatekeys, getInputObjects, getMaxWithdrawalOnAmount, getMaxWithdrawalOnKey, getRandomNullifier, hashNums, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder, standardizeToPoseidon };
+export { type CircomInputObject, type CircomProof, type KeyMetadata, type Keys, type MerkleTreeInterface, PRIME, type Proof, type TreeInterface, bitsToNum, bytesToBits, concatLeaves, convertProofToBits, TinyMerkleTree as default, formatForCircom, generateDepositKey, generateRandomNumber, generatekeys, getInputObjects, getMaxWithdrawalOnAmount, getMaxWithdrawalOnKey, getRandomNullifier, hashNums, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder, standardizeHashToPoseidon, standardizeToPoseidon };
