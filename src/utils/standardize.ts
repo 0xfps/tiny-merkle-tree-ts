@@ -19,10 +19,18 @@ export const PRIME = 21888242871839275222246405745257275088548364400416034343698
  * equivalent of a given deposit key (str). The equivalent is used as the deposit
  * commitment on the smart contract.
  */
-export function standardizeToPoseidon(str: string, reverse: boolean = false): string {
+export function standardizeHashToPoseidon(str: string, reverse: boolean = false): string {
     const hash = keccak256(str)
     const hashBits = reverse ? bytesToBits(new Uint8Array(Buffer.from(hash.slice(2), "hex").reverse()))
         : bytesToBits(new Uint8Array(Buffer.from(hash.slice(2), "hex")))
     const reduced = new F1Field(PRIME).e(bitsToNum(hashBits))
+    return smolPadding(`0x${reduced.toString(16)}`)
+}
+
+// @todo Explain a lot about LSB.
+export function standardizeToPoseidon(str: string): string {
+    const uint8Array = new Uint8Array(Buffer.from(str.slice(2), "hex"))
+    const bigNumber = bitsToNum(bytesToBits(uint8Array))
+    const reduced = new F1Field(PRIME).e(bigNumber)
     return smolPadding(`0x${reduced.toString(16)}`)
 }

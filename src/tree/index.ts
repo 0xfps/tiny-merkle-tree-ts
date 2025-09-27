@@ -4,7 +4,7 @@ import { buildTree } from "./build-tree";
 import { generateProofForLeaf } from "./generate-proof";
 import { verifyMerkleProof } from "./verify-merkle-proof";
 
-export default class MiniMerkleTree implements MerkleTreeInterface {
+export default class TinyMerkleTree implements MerkleTreeInterface {
     tree: string[][]
     root: string
     depth: number

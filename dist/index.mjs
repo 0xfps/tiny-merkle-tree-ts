@@ -116,7 +116,7 @@ function verifyMerkleProof(root, leaf, merkleProof) {
 }
 
 // src/tree/index.ts
-var MiniMerkleTree = class {
+var TinyMerkleTree = class {
   tree;
   root;
   depth;
@@ -145,15 +145,15 @@ import { encodeBytes32String } from "ethers";
 // src/utils/bytes-to-bits.ts
 function bytesToBits(bytes) {
   const bits = [];
-  bytes.forEach(function(byte) {
-    for (let i = 0; i < 8; i++) {
-      if ((Number(byte) & 1 << i) > 0) {
+  for (let i = 0; i < bytes.length; i++) {
+    for (let j = 0; j < 8; j++) {
+      if ((Number(bytes[i]) & 1 << j) > 0) {
         bits.push(1);
       } else {
         bits.push(0);
       }
     }
-  });
+  }
   return bits;
 }
 
@@ -195,18 +195,24 @@ import { keccak256 } from "ethers";
 // src/utils/bits-to-num.ts
 function bitsToNum(bits) {
   let total = 0n;
-  bits.forEach(function(bit, index) {
-    total += BigInt(bit) * 2n ** BigInt(index);
-  });
+  for (let i = 0; i < bits.length; i++) {
+    total += BigInt(bits[i]) * 2n ** BigInt(i);
+  }
   return total;
 }
 
 // src/utils/standardize.ts
 var PRIME = 21888242871839275222246405745257275088548364400416034343698204186575808495617n;
-function standardizeToPoseidon(str, reverse = false) {
+function standardizeHashToPoseidon(str, reverse = false) {
   const hash2 = keccak256(str);
   const hashBits = reverse ? bytesToBits(new Uint8Array(Buffer.from(hash2.slice(2), "hex").reverse())) : bytesToBits(new Uint8Array(Buffer.from(hash2.slice(2), "hex")));
   const reduced = new F1Field(PRIME).e(bitsToNum(hashBits));
+  return smolPadding(`0x${reduced.toString(16)}`);
+}
+function standardizeToPoseidon(str) {
+  const uint8Array = new Uint8Array(Buffer.from(str.slice(2), "hex"));
+  const bigNumber = bitsToNum(bytesToBits(uint8Array));
+  const reduced = new F1Field(PRIME).e(bigNumber);
   return smolPadding(`0x${reduced.toString(16)}`);
 }
 
@@ -272,7 +278,8 @@ function extractKeyMetadata(key) {
 function generatekeys(asset, amount, secretKey) {
   const withdrawalKey = generateWithdrawalKey(asset, amount, secretKey);
   const depositKey = generateDepositKey(withdrawalKey, secretKey);
-  return { withdrawalKey, depositKey };
+  const standardizedKey = standardizeToPoseidon(depositKey);
+  return { withdrawalKey, depositKey, standardizedKey };
 }
 function generateWithdrawalKey(asset, amount, secretKey) {
   const entropy = makeEven(generateRandomNumber().toString(16));
@@ -285,7 +292,9 @@ function generateDepositKey(withdrawalKey, secretKey) {
   const { asset, amount } = extractKeyMetadata(withdrawalKey);
   const hexSecretKey = strToHex3(secretKey);
   const withdrawalKeyConcat = `${withdrawalKey}${hexSecretKey}`;
-  const depositKeyHash = keccak2562(withdrawalKeyConcat);
+  const depositKeyInPoseidon = standardizeToPoseidon(withdrawalKeyConcat);
+  const depositKeyBits = bytesToBits(new Uint8Array(Buffer.from(depositKeyInPoseidon.slice(2), "hex")));
+  const depositKeyHash = smolPadding(`0x${bitsToNum(depositKeyBits).toString(16)}`);
   const depositKey = `${depositKeyHash}${_encodePackAsset(asset)}${_encodePackAmount(amount)}`;
   return depositKey;
 }
@@ -339,7 +348,7 @@ function getInputObjects(withdrawalKey, standardizedKey, secretKey, tree) {
 }
 
 // src/index.ts
-var index_default = MiniMerkleTree;
+var index_default = TinyMerkleTree;
 export {
   PRIME,
   bitsToNum,
@@ -359,6 +368,7 @@ export {
   smolPadding,
   sortAndConcatLeaves,
   sortLeavesInAscOrder,
+  standardizeHashToPoseidon,
   standardizeToPoseidon
 };
 //# sourceMappingURL=index.mjs.map

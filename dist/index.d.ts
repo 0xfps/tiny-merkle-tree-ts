@@ -12,7 +12,7 @@ interface MerkleTreeInterface {
     verifyProof: (leaf: string, proof: Proof) => boolean;
 }
 
-declare class MiniMerkleTree implements MerkleTreeInterface {
+declare class TinyMerkleTree implements MerkleTreeInterface {
     tree: string[][];
     root: string;
     depth: number;
@@ -40,7 +40,7 @@ declare function bytesToBits(bytes: Uint8Array<ArrayBuffer>): number[];
  * Poseidon hash of some numbers, e.g 1 will yield a 31-byte string.
  * This function pads all leaves to 32 bytes before being used in the tree.
  * On the contract, it won't be an issue.
- * Pad up all leaves before calling new MiniMerkleTree and after every hash.
+ * Pad up all leaves before calling new TinyMerkleTree and after every hash.
  * Leaves coming from the contract are already 32 byte padded.
  * If the leaf is already complete, nothing happens.
  */
@@ -60,7 +60,8 @@ declare const PRIME = 2188824287183927522224640574525727508854836440041603434369
  * equivalent of a given deposit key (str). The equivalent is used as the deposit
  * commitment on the smart contract.
  */
-declare function standardizeToPoseidon(str: string, reverse?: boolean): string;
+declare function standardizeHashToPoseidon(str: string, reverse?: boolean): string;
+declare function standardizeToPoseidon(str: string): string;
 
 declare function bitsToNum(bits: number[]): BigInt;
 
@@ -73,6 +74,7 @@ declare function hashNums(num: number[]): string;
 interface Keys {
     withdrawalKey: string;
     depositKey: string;
+    standardizedKey: string;
 }
 
 declare function generatekeys(asset: string, amount: BigInt, secretKey: string): Keys;
@@ -106,4 +108,4 @@ interface TreeInterface {
     depth: number;
 }
 
-export { type CircomInputObject, type CircomProof, type KeyMetadata, type Keys, type MerkleTreeInterface, PRIME, type Proof, type TreeInterface, bitsToNum, bytesToBits, concatLeaves, convertProofToBits, MiniMerkleTree as default, formatForCircom, generateDepositKey, generateRandomNumber, generatekeys, getInputObjects, getMaxWithdrawalOnAmount, getMaxWithdrawalOnKey, getRandomNullifier, hashNums, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder, standardizeToPoseidon };
+export { type CircomInputObject, type CircomProof, type KeyMetadata, type Keys, type MerkleTreeInterface, PRIME, type Proof, type TreeInterface, bitsToNum, bytesToBits, concatLeaves, convertProofToBits, TinyMerkleTree as default, formatForCircom, generateDepositKey, generateRandomNumber, generatekeys, getInputObjects, getMaxWithdrawalOnAmount, getMaxWithdrawalOnKey, getRandomNullifier, hashNums, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder, standardizeHashToPoseidon, standardizeToPoseidon };

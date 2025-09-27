@@ -1,5 +1,5 @@
 import { poseidon } from "poseidon-hash"
-import MiniMerkleTree from "../src/index"
+import TinyMerkleTree from "../src/index"
 
 const leaves = [
     '0x10917db11f557031bd807ceea970cf98992f6edc1385dea96407160d98bca333',
@@ -20,7 +20,7 @@ const leaves = [
     '0x1def06e980e5e2fff51e7f430964dd0eab2d065a3fc8360bc8cde6121ead8cb6'
 ]
 
-const tree = new MiniMerkleTree(leaves)
+const tree = new TinyMerkleTree(leaves)
 // console.log(tree)
 console.log(tree.root)
 // console.log(tree.generateMerkleProof(leaves[0]))
