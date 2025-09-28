@@ -328,24 +328,41 @@ function getMaxWithdrawalOnAmount(amount) {
 // src/utils/get-input-object.ts
 import { strToHex as strToHex4 } from "hexyjs";
 function getInputObjects(withdrawalKey, standardizedKey, secretKey, tree) {
-  const root = convertProofToBits(tree.root);
+  const root = bitsToNum(convertProofToBits(tree.root));
   const merkleProof = tree.generateMerkleProof(standardizedKey);
   const { proof, directions, validBits } = formatForCircom(merkleProof);
-  const withdrawalKeyBits = bytesToBits(new Uint8Array(Buffer.from(withdrawalKey.slice(2), "hex")));
-  const secretKeyBits = bytesToBits(new Uint8Array(Buffer.from(strToHex4(secretKey), "hex")));
+  const { keyHash, asset, amountU32 } = extractKeyMetadata(withdrawalKey);
+  const wKeyBigInt = BigInt(keyHash);
+  const assetBigInt = BigInt(asset);
+  const amountBigInt = BigInt(amountU32);
+  const secretKeyBigInt = BigInt(`0x${strToHex4(secretKey)}`);
   const nullifier = getRandomNullifier();
   const nullHash = hashNums([nullifier]);
   const nullifierHash = convertProofToBits(nullHash);
   return {
     root,
-    withdrawalKey: withdrawalKeyBits,
-    secretKey: secretKeyBits,
+    withdrawalKeyNumPart1: wKeyBigInt,
+    withdrawalKeyNumPart2: assetBigInt,
+    withdrawalKeyNumPart3: amountBigInt,
+    secretKey: secretKeyBigInt,
     directions,
     validBits,
     proof,
     nullifier,
     nullifierHash
   };
+}
+
+// src/utils/get-leaf-from-key.ts
+import { poseidon as poseidon3 } from "poseidon-hash";
+function getLeafFromKey(depositKey) {
+  const { keyHash, asset, amountU32 } = extractKeyMetadata(depositKey);
+  const dKeyBigInt = BigInt(keyHash);
+  const assetBigInt = BigInt(asset);
+  const amountBigInt = BigInt(amountU32);
+  const leafNum = poseidon3([dKeyBigInt, assetBigInt, amountBigInt]);
+  const leaf = smolPadding(`0x${leafNum.toString(16)}`);
+  return leaf;
 }
 
 // src/index.ts
@@ -362,6 +379,7 @@ export {
   generateRandomNumber,
   generatekeys,
   getInputObjects,
+  getLeafFromKey,
   getMaxWithdrawalOnAmount,
   getMaxWithdrawalOnKey,
   getRandomNullifier,

@@ -2,10 +2,11 @@ import { MerkleTreeInterface } from "../../interfaces/merkle-tree";
 import { strToHex } from "hexyjs";
 import { convertProofToBits } from "./convert-proof-leaf-to-bits";
 import formatForCircom from "./format-for-circom";
-import bytesToBits from "./bytes-to-bits";
 import { getRandomNullifier } from "./get-random-nullifier";
 import { hashNums } from "./hash";
 import { CircomInputObject } from "../../interfaces/circom-input-object";
+import { bitsToNum } from "./bits-to-num";
+import { extractKeyMetadata } from "../contract-utils/extract-key-metadata";
 
 export function getInputObjects(
     withdrawalKey: string,
@@ -13,12 +14,16 @@ export function getInputObjects(
     secretKey: string,
     tree: MerkleTreeInterface
 ): CircomInputObject {
-    const root = convertProofToBits(tree.root)
+    const root = bitsToNum(convertProofToBits(tree.root))
     const merkleProof = tree.generateMerkleProof(standardizedKey)
     const { proof, directions, validBits } = formatForCircom(merkleProof)
 
-    const withdrawalKeyBits = bytesToBits(new Uint8Array(Buffer.from(withdrawalKey.slice(2), "hex")))
-    const secretKeyBits = bytesToBits(new Uint8Array(Buffer.from(strToHex(secretKey), "hex")))
+    const { keyHash, asset, amountU32 } = extractKeyMetadata(withdrawalKey)
+
+    const wKeyBigInt = BigInt(keyHash)
+    const assetBigInt = BigInt(asset)
+    const amountBigInt = BigInt(amountU32)
+    const secretKeyBigInt = BigInt(`0x${strToHex(secretKey)}`)
     
     const nullifier = getRandomNullifier()
     const nullHash = hashNums([nullifier])
@@ -26,8 +31,10 @@ export function getInputObjects(
 
     return {
         root,
-        withdrawalKey: withdrawalKeyBits,
-        secretKey: secretKeyBits,
+        withdrawalKeyNumPart1: wKeyBigInt,
+        withdrawalKeyNumPart2: assetBigInt,
+        withdrawalKeyNumPart3: amountBigInt,
+        secretKey: secretKeyBigInt,
         directions,
         validBits,
         proof,

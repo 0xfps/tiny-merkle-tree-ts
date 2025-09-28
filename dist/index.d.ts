@@ -83,9 +83,11 @@ declare function getMaxWithdrawalOnKey(key: string): BigInt;
 declare function getMaxWithdrawalOnAmount(amount: BigInt): BigInt;
 
 interface CircomInputObject {
-    root: number[];
-    withdrawalKey: number[];
-    secretKey: number[];
+    root: BigInt;
+    withdrawalKeyNumPart1: BigInt;
+    withdrawalKeyNumPart2: BigInt;
+    withdrawalKeyNumPart3: BigInt;
+    secretKey: BigInt;
     directions: number[];
     validBits: number[];
     proof: number[][];
@@ -94,6 +96,8 @@ interface CircomInputObject {
 }
 
 declare function getInputObjects(withdrawalKey: string, standardizedKey: string, secretKey: string, tree: MerkleTreeInterface): CircomInputObject;
+
+declare function getLeafFromKey(depositKey: string): string;
 
 interface KeyMetadata {
     keyHash: string;
@@ -108,4 +112,4 @@ interface TreeInterface {
     depth: number;
 }
 
-export { type CircomInputObject, type CircomProof, type KeyMetadata, type Keys, type MerkleTreeInterface, PRIME, type Proof, type TreeInterface, bitsToNum, bytesToBits, concatLeaves, convertProofToBits, TinyMerkleTree as default, formatForCircom, generateDepositKey, generateRandomNumber, generatekeys, getInputObjects, getMaxWithdrawalOnAmount, getMaxWithdrawalOnKey, getRandomNullifier, hashNums, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder, standardizeHashToPoseidon, standardizeToPoseidon };
+export { type CircomInputObject, type CircomProof, type KeyMetadata, type Keys, type MerkleTreeInterface, PRIME, type Proof, type TreeInterface, bitsToNum, bytesToBits, concatLeaves, convertProofToBits, TinyMerkleTree as default, formatForCircom, generateDepositKey, generateRandomNumber, generatekeys, getInputObjects, getLeafFromKey, getMaxWithdrawalOnAmount, getMaxWithdrawalOnKey, getRandomNullifier, hashNums, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder, standardizeHashToPoseidon, standardizeToPoseidon };
