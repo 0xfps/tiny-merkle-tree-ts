@@ -12,6 +12,7 @@ import { hashNums } from "./utils/hash";
 import { generatekeys, generateDepositKey } from "./contract-utils/generate-keys";
 import { getMaxWithdrawalOnKey, getMaxWithdrawalOnAmount } from "./contract-utils/max-withdrawal";
 import { getInputObjects } from "./utils/get-input-object";
+import { getLeafFromKey } from "./utils/get-leaf-from-key";
 import { CircomProof } from "../interfaces/circom-proof";
 import { KeyMetadata } from "../interfaces/key-metadata";
 import { Keys } from "../interfaces/keys";
@@ -31,6 +32,7 @@ export {
     generatekeys,
     generateRandomNumber,
     getInputObjects,
+    getLeafFromKey,
     getMaxWithdrawalOnAmount,
     getMaxWithdrawalOnKey,
     getRandomNullifier,

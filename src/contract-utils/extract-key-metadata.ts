@@ -11,6 +11,7 @@ export function extractKeyMetadata(key: string): KeyMetadata {
     const keyHash = key.slice(0, 66)
     const asset = `0x${key.slice(66, 106)}`
     const amount = BigInt(`0x${key.slice(106)}`)
+    const amountU32 = `0x${key.slice(106)}`
 
-    return { keyHash, asset, amount }
+    return { keyHash, asset, amountU32, amount }
 }
