@@ -305,9 +305,6 @@ function getRandomNullifier() {
   return nullifier;
 }
 
-// src/contract-utils/generate-keys.ts
-var import_ethers3 = require("ethers");
-
 // src/utils/hexify.ts
 function hexify(str) {
   return `0x${str}`;
@@ -326,10 +323,12 @@ function extractKeyMetadata(key) {
   const keyHash = key.slice(0, 66);
   const asset = `0x${key.slice(66, 106)}`;
   const amount = BigInt(`0x${key.slice(106)}`);
-  return { keyHash, asset, amount };
+  const amountU32 = `0x${key.slice(106)}`;
+  return { keyHash, asset, amountU32, amount };
 }
 
 // src/contract-utils/generate-keys.ts
+var import_poseidon_hash2 = require("poseidon-hash");
 function generatekeys(asset, amount, secretKey) {
   const withdrawalKey = generateWithdrawalKey(asset, amount, secretKey);
   const depositKey = generateDepositKey(withdrawalKey, secretKey);
@@ -339,17 +338,20 @@ function generatekeys(asset, amount, secretKey) {
 function generateWithdrawalKey(asset, amount, secretKey) {
   const entropy = makeEven(generateRandomNumber().toString(16));
   const hexSecretKey = (0, import_hexyjs3.strToHex)(secretKey);
-  const withdrawalKeyHash = (0, import_ethers3.keccak256)(`${hexify(entropy)}${hexSecretKey}`);
+  const entropyBigInt = BigInt(hexify(entropy));
+  const secretKeyBigInt = BigInt(hexify(hexSecretKey));
+  const withdrawalKeyPoseidonFieldEquiv = (0, import_poseidon_hash2.poseidon)([entropyBigInt, secretKeyBigInt]);
+  const withdrawalKeyPoseidonFieldEquivHexString = `0x${withdrawalKeyPoseidonFieldEquiv.toString(16)}`;
+  const withdrawalKeyHash = smolPadding(withdrawalKeyPoseidonFieldEquivHexString);
   const withdrawalKey = `${withdrawalKeyHash}${_encodePackAsset(asset)}${_encodePackAmount(amount)}`;
   return withdrawalKey;
 }
 function generateDepositKey(withdrawalKey, secretKey) {
-  const { asset, amount } = extractKeyMetadata(withdrawalKey);
+  const { keyHash, asset, amount, amountU32 } = extractKeyMetadata(withdrawalKey);
   const hexSecretKey = (0, import_hexyjs3.strToHex)(secretKey);
-  const withdrawalKeyConcat = `${withdrawalKey}${hexSecretKey}`;
-  const depositKeyInPoseidon = standardizeToPoseidon(withdrawalKeyConcat);
-  const depositKeyBits = bytesToBits(new Uint8Array(Buffer.from(depositKeyInPoseidon.slice(2), "hex")));
-  const depositKeyHash = smolPadding(`0x${bitsToNum(depositKeyBits).toString(16)}`);
+  const hexSecretKeyNum = BigInt(hexify(hexSecretKey));
+  const depositKeyPosHash = (0, import_poseidon_hash2.poseidon)([BigInt(keyHash), BigInt(asset), BigInt(amountU32), hexSecretKeyNum]);
+  const depositKeyHash = smolPadding(`0x${depositKeyPosHash.toString(16)}`);
   const depositKey = `${depositKeyHash}${_encodePackAsset(asset)}${_encodePackAmount(amount)}`;
   return depositKey;
 }

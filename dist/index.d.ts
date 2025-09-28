@@ -99,6 +99,7 @@ declare function getInputObjects(withdrawalKey: string, standardizedKey: string,
 interface KeyMetadata {
     keyHash: string;
     asset: string;
+    amountU32: string;
     amount: BigInt;
 }
 
