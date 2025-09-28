@@ -74,7 +74,6 @@ declare function hashNums(num: number[]): string;
 interface Keys {
     withdrawalKey: string;
     depositKey: string;
-    standardizedKey: string;
 }
 
 declare function generatekeys(asset: string, amount: BigInt, secretKey: string): Keys;

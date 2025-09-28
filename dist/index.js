@@ -332,8 +332,7 @@ var import_poseidon_hash2 = require("poseidon-hash");
 function generatekeys(asset, amount, secretKey) {
   const withdrawalKey = generateWithdrawalKey(asset, amount, secretKey);
   const depositKey = generateDepositKey(withdrawalKey, secretKey);
-  const standardizedKey = standardizeToPoseidon(depositKey);
-  return { withdrawalKey, depositKey, standardizedKey };
+  return { withdrawalKey, depositKey };
 }
 function generateWithdrawalKey(asset, amount, secretKey) {
   const entropy = makeEven(generateRandomNumber().toString(16));

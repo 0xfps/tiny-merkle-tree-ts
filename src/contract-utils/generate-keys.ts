@@ -1,4 +1,3 @@
-import { keccak256 } from "ethers";
 import { Keys } from "../../interfaces/keys";
 import { generateRandomNumber } from "../utils/generate-random-number";
 import { smolPadding } from "../utils/smol-padding";
@@ -6,17 +5,13 @@ import { hexify } from "../utils/hexify";
 import { strToHex } from "hexyjs";
 import { makeEven } from "../utils/make-even";
 import { extractKeyMetadata } from "./extract-key-metadata";
-import { standardizeToPoseidon } from "../utils/standardize";
-import bytesToBits from "../utils/bytes-to-bits";
-import { bitsToNum } from "../utils/bits-to-num";
 import { poseidon } from "poseidon-hash";
 
 export function generatekeys(asset: string, amount: BigInt, secretKey: string): Keys {
     const withdrawalKey = generateWithdrawalKey(asset, amount, secretKey)
     const depositKey = generateDepositKey(withdrawalKey, secretKey)
-    const standardizedKey = standardizeToPoseidon(depositKey)
 
-    return { withdrawalKey, depositKey, standardizedKey }
+    return { withdrawalKey, depositKey }
 }
 
 function generateWithdrawalKey(asset: string, amount: BigInt, secretKey: string): string {
