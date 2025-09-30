@@ -6,7 +6,7 @@ import { PRIME } from "./standardize"
 const LOWER_LIMIT = 1_000_000_000_000_000n
 const UPPER_LIMIT = PRIME - BigInt(1e9)
 
-export function generateRandomNumber(): BigInt {
+export function generateRandomNumber(): bigint {
     const randomString = Randomstring.generate({
         length: 8,
         charset: ["alphanumeric"]

@@ -2,6 +2,7 @@ import { encodeBytes32String } from "ethers";
 import { CircomProof } from "../../interfaces/circom-proof";
 import { Proof } from "../../interfaces/proof";
 import { convertProofToBits } from "./convert-proof-leaf-to-bits";
+import { bitsToNum } from "./bits-to-num";
 
 // Formats a given proof data into valid Circom input format, i.e., bits.
 export default function formatForCircom(proof: Proof): CircomProof {
@@ -11,21 +12,21 @@ export default function formatForCircom(proof: Proof): CircomProof {
     const lengthTo32 = 32 - length
 
     const validBits: number[] = []
-    const proofBits: number[][] = []
+    const proofs: string[] = []
 
     proof.directions.forEach(function (_, index: number) {
-        proofBits.push(convertProofToBits(proof.proof[index]))
+        proofs.push(bitsToNum(convertProofToBits(proof.proof[index])).toString())
         validBits.push(1)
     })
 
     for (let i = 0; i < lengthTo32; i++) {
-        proofBits.push(convertProofToBits(encodeBytes32String("")))
+        proofs.push(bitsToNum(convertProofToBits(encodeBytes32String(""))).toString())
         proof.directions.push(0)
         validBits.push(0)
     }
 
     const circomProof = {
-        proof: proofBits,
+        proof: proofs,
         directions: proof.directions,
         validBits
     }
