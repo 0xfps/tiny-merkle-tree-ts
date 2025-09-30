@@ -392,7 +392,7 @@ function getInputObjects(withdrawalKey, standardizedKey, secretKey, tree) {
   const secretKeyBigInt = BigInt(`0x${(0, import_hexyjs4.strToHex)(secretKey)}`);
   const nullifier = generateRandomNumber();
   const nullHash = hashNums([nullifier]);
-  const nullifierHash = convertProofToBits(nullHash);
+  const nullifierHash = bitsToNum(convertProofToBits(nullHash));
   return {
     root,
     withdrawalKeyNumPart1: wKeyBigInt,

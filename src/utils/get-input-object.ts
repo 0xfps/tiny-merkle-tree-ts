@@ -27,7 +27,7 @@ export function getInputObjects(
     
     const nullifier = generateRandomNumber()
     const nullHash = hashNums([nullifier])
-    const nullifierHash = convertProofToBits(nullHash)
+    const nullifierHash = bitsToNum(convertProofToBits(nullHash))
 
     return {
         root,

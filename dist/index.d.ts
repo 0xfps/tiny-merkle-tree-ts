@@ -92,7 +92,7 @@ interface CircomInputObject {
     validBits: number[];
     proof: string[];
     nullifier: BigInt;
-    nullifierHash: number[];
+    nullifierHash: BigInt;
 }
 
 declare function getInputObjects(withdrawalKey: string, standardizedKey: string, secretKey: string, tree: MerkleTreeInterface): CircomInputObject;
