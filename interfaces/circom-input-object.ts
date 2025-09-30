@@ -9,5 +9,5 @@ export interface CircomInputObject {
     validBits: number[],
     proof: string[],
     nullifier: BigInt,
-    nullifierHash: number[]
+    nullifierHash: BigInt
 }
