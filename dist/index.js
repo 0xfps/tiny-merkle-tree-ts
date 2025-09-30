@@ -85,8 +85,8 @@ var import_poseidon_hash = require("poseidon-hash");
 function hash(leaves) {
   return smolPadding(`0x${(0, import_poseidon_hash.poseidon)(leaves).toString(16)}`);
 }
-function hashNums(num) {
-  return smolPadding(`0x${(0, import_poseidon_hash.poseidon)(num).toString(16)}`);
+function hashNums(nums) {
+  return smolPadding(`0x${(0, import_poseidon_hash.poseidon)(nums).toString(16)}`);
 }
 
 // src/tree/build-tree.ts
@@ -220,34 +220,6 @@ function convertProofToBits(proof) {
   return bytesToBits(uint8Array);
 }
 
-// src/utils/format-for-circom.ts
-function formatForCircom(proof) {
-  if (proof.proof.length > 32) throw new Error("Proof length exceeds 32!");
-  const length = proof.directions.length;
-  const lengthTo32 = 32 - length;
-  const validBits = [];
-  const proofBits = [];
-  proof.directions.forEach(function(_, index) {
-    proofBits.push(convertProofToBits(proof.proof[index]));
-    validBits.push(1);
-  });
-  for (let i = 0; i < lengthTo32; i++) {
-    proofBits.push(convertProofToBits((0, import_ethers.encodeBytes32String)("")));
-    proof.directions.push(0);
-    validBits.push(0);
-  }
-  const circomProof = {
-    proof: proofBits,
-    directions: proof.directions,
-    validBits
-  };
-  return circomProof;
-}
-
-// src/utils/standardize.ts
-var import_ffjavascript = require("@zk2/ffjavascript");
-var import_ethers2 = require("ethers");
-
 // src/utils/bits-to-num.ts
 function bitsToNum(bits) {
   let total = 0n;
@@ -257,7 +229,33 @@ function bitsToNum(bits) {
   return total;
 }
 
+// src/utils/format-for-circom.ts
+function formatForCircom(proof) {
+  if (proof.proof.length > 32) throw new Error("Proof length exceeds 32!");
+  const length = proof.directions.length;
+  const lengthTo32 = 32 - length;
+  const validBits = [];
+  const proofs = [];
+  proof.directions.forEach(function(_, index) {
+    proofs.push(bitsToNum(convertProofToBits(proof.proof[index])).toString());
+    validBits.push(1);
+  });
+  for (let i = 0; i < lengthTo32; i++) {
+    proofs.push(bitsToNum(convertProofToBits((0, import_ethers.encodeBytes32String)(""))).toString());
+    proof.directions.push(0);
+    validBits.push(0);
+  }
+  const circomProof = {
+    proof: proofs,
+    directions: proof.directions,
+    validBits
+  };
+  return circomProof;
+}
+
 // src/utils/standardize.ts
+var import_ffjavascript = require("@zk2/ffjavascript");
+var import_ethers2 = require("ethers");
 var PRIME = 21888242871839275222246405745257275088548364400416034343698204186575808495617n;
 function standardizeHashToPoseidon(str, reverse = false) {
   const hash2 = (0, import_ethers2.keccak256)(str);
@@ -392,7 +390,7 @@ function getInputObjects(withdrawalKey, standardizedKey, secretKey, tree) {
   const assetBigInt = BigInt(asset);
   const amountBigInt = BigInt(amountU32);
   const secretKeyBigInt = BigInt(`0x${(0, import_hexyjs4.strToHex)(secretKey)}`);
-  const nullifier = getRandomNullifier();
+  const nullifier = generateRandomNumber();
   const nullHash = hashNums([nullifier]);
   const nullifierHash = convertProofToBits(nullHash);
   return {

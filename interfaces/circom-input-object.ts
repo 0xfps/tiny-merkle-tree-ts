@@ -7,7 +7,7 @@ export interface CircomInputObject {
     secretKey: BigInt,
     directions: number[],
     validBits: number[],
-    proof: number[][],
-    nullifier: number,
+    proof: string[],
+    nullifier: BigInt,
     nullifierHash: number[]
 }

@@ -27,7 +27,7 @@ declare function concatLeaves(leaf1: string, leaf2: string): string;
 declare function sortAndConcatLeaves(leaf1: string, leaf2: string): string;
 
 interface CircomProof {
-    proof: number[][];
+    proof: string[];
     directions: number[];
     validBits: number[];
 }
@@ -65,11 +65,11 @@ declare function standardizeToPoseidon(str: string): string;
 
 declare function bitsToNum(bits: number[]): BigInt;
 
-declare function generateRandomNumber(): BigInt;
+declare function generateRandomNumber(): bigint;
 
 declare function getRandomNullifier(): number;
 
-declare function hashNums(num: number[]): string;
+declare function hashNums(nums: bigint[] | number[]): string;
 
 interface Keys {
     withdrawalKey: string;
@@ -90,8 +90,8 @@ interface CircomInputObject {
     secretKey: BigInt;
     directions: number[];
     validBits: number[];
-    proof: number[][];
-    nullifier: number;
+    proof: string[];
+    nullifier: BigInt;
     nullifierHash: number[];
 }
 

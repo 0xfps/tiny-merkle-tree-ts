@@ -1,5 +1,5 @@
 export interface CircomProof {
-    proof: number[][],
+    proof: string[],
     directions: number[],
     validBits: number[]
 }

@@ -2,11 +2,11 @@ import { MerkleTreeInterface } from "../../interfaces/merkle-tree";
 import { strToHex } from "hexyjs";
 import { convertProofToBits } from "./convert-proof-leaf-to-bits";
 import formatForCircom from "./format-for-circom";
-import { getRandomNullifier } from "./get-random-nullifier";
 import { hashNums } from "./hash";
 import { CircomInputObject } from "../../interfaces/circom-input-object";
 import { bitsToNum } from "./bits-to-num";
 import { extractKeyMetadata } from "../contract-utils/extract-key-metadata";
+import { generateRandomNumber } from "./generate-random-number";
 
 export function getInputObjects(
     withdrawalKey: string,
@@ -25,7 +25,7 @@ export function getInputObjects(
     const amountBigInt = BigInt(amountU32)
     const secretKeyBigInt = BigInt(`0x${strToHex(secretKey)}`)
     
-    const nullifier = getRandomNullifier()
+    const nullifier = generateRandomNumber()
     const nullHash = hashNums([nullifier])
     const nullifierHash = convertProofToBits(nullHash)
 
