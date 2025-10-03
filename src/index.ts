@@ -11,6 +11,7 @@ import { getRandomNullifier } from "./utils/get-random-nullifier";
 import { hashNums } from "./utils/hash";
 import { generatekeys, generateDepositKey } from "./contract-utils/generate-keys";
 import { getMaxWithdrawalOnKey, getMaxWithdrawalOnAmount } from "./contract-utils/max-withdrawal";
+import { extractKeyMetadata } from "./contract-utils/extract-key-metadata";
 import { getInputObjects } from "./utils/get-input-object";
 import { getLeafFromKey } from "./utils/get-leaf-from-key";
 import { CircomProof } from "../interfaces/circom-proof";
@@ -27,6 +28,7 @@ export {
     bytesToBits,
     concatLeaves,
     convertProofToBits,
+    extractKeyMetadata,
     formatForCircom,
     generateDepositKey,
     generatekeys,

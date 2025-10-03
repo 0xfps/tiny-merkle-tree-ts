@@ -372,6 +372,7 @@ export {
   concatLeaves,
   convertProofToBits,
   index_default as default,
+  extractKeyMetadata,
   formatForCircom,
   generateDepositKey,
   generateRandomNumber,
