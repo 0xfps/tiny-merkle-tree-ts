@@ -7,14 +7,14 @@ import { makeEven } from "../utils/make-even";
 import { extractKeyMetadata } from "./extract-key-metadata";
 import { poseidon } from "poseidon-hash";
 
-export function generatekeys(asset: string, amount: BigInt, secretKey: string): Keys {
-    const withdrawalKey = generateWithdrawalKey(asset, amount, secretKey)
+export function generatekeys(amount: BigInt, secretKey: string): Keys {
+    const withdrawalKey = generateWithdrawalKey(amount, secretKey)
     const depositKey = generateDepositKey(withdrawalKey, secretKey)
 
     return { withdrawalKey, depositKey }
 }
 
-function generateWithdrawalKey(asset: string, amount: BigInt, secretKey: string): string {
+function generateWithdrawalKey(amount: BigInt, secretKey: string): string {
     const entropy = makeEven(generateRandomNumber().toString(16))
     const hexSecretKey = strToHex(secretKey)
 
@@ -24,24 +24,20 @@ function generateWithdrawalKey(asset: string, amount: BigInt, secretKey: string)
     const withdrawalKeyPoseidonFieldEquivHexString = `0x${withdrawalKeyPoseidonFieldEquiv.toString(16)}`
     const withdrawalKeyHash = smolPadding(withdrawalKeyPoseidonFieldEquivHexString)
 
-    const withdrawalKey = `${withdrawalKeyHash}${_encodePackAsset(asset)}${_encodePackAmount(amount)}`
+    const withdrawalKey = `${withdrawalKeyHash}${_encodePackAmount(amount)}`
     return withdrawalKey
 }
 
 export function generateDepositKey(withdrawalKey: string, secretKey: string): string {
-    const { keyHash, asset, amount, amountU32 } = extractKeyMetadata(withdrawalKey)
+    const { keyHash, amount, amountU32 } = extractKeyMetadata(withdrawalKey)
     const hexSecretKey = strToHex(secretKey)
     const hexSecretKeyNum = BigInt(hexify(hexSecretKey))
 
-    const depositKeyPosHash = poseidon([BigInt(keyHash), BigInt(asset), BigInt(amountU32), hexSecretKeyNum])
+    const depositKeyPosHash = poseidon([BigInt(keyHash), BigInt(amountU32), hexSecretKeyNum])
     const depositKeyHash = smolPadding(`0x${depositKeyPosHash.toString(16)}`)
 
-    const depositKey = `${depositKeyHash}${_encodePackAsset(asset)}${_encodePackAmount(amount)}`
+    const depositKey = `${depositKeyHash}${_encodePackAmount(amount)}`
     return depositKey
-}
-
-function _encodePackAsset(asset: string): string {
-    return asset.slice(2)
 }
 
 function _encodePackAmount(amount: BigInt): string {

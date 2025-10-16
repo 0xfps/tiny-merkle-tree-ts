@@ -76,7 +76,7 @@ interface Keys {
     depositKey: string;
 }
 
-declare function generatekeys(asset: string, amount: BigInt, secretKey: string): Keys;
+declare function generatekeys(amount: BigInt, secretKey: string): Keys;
 declare function generateDepositKey(withdrawalKey: string, secretKey: string): string;
 
 declare function getMaxWithdrawalOnKey(key: string): BigInt;
@@ -84,7 +84,6 @@ declare function getMaxWithdrawalOnAmount(amount: BigInt): BigInt;
 
 interface KeyMetadata {
     keyHash: string;
-    asset: string;
     amountU32: string;
     amount: BigInt;
 }
@@ -95,7 +94,6 @@ interface CircomInputObject {
     root: BigInt;
     withdrawalKeyNumPart1: BigInt;
     withdrawalKeyNumPart2: BigInt;
-    withdrawalKeyNumPart3: BigInt;
     secretKey: BigInt;
     directions: number[];
     validBits: number[];

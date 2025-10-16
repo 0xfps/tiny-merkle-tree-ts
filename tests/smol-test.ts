@@ -38,10 +38,3 @@ console.log(BigInt(smallProof.proof[0]))
 
 const bitProof = formatForCircom(smallProof).proof[0]
 console.log({ bitProof })
-
-let num = 0n
-for (let i = 0; i < 256; i++) {
-    num += BigInt(bitProof[i]) * (2n ** BigInt(i));
-}
-
-console.log(num)
