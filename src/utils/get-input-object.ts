@@ -18,10 +18,9 @@ export function getInputObjects(
     const merkleProof = tree.generateMerkleProof(standardizedKey)
     const { proof, directions, validBits } = formatForCircom(merkleProof)
 
-    const { keyHash, asset, amountU32 } = extractKeyMetadata(withdrawalKey)
+    const { keyHash, amountU32 } = extractKeyMetadata(withdrawalKey)
 
     const wKeyBigInt = BigInt(keyHash)
-    const assetBigInt = BigInt(asset)
     const amountBigInt = BigInt(amountU32)
     const secretKeyBigInt = BigInt(`0x${strToHex(secretKey)}`)
     
@@ -32,8 +31,7 @@ export function getInputObjects(
     return {
         root,
         withdrawalKeyNumPart1: wKeyBigInt,
-        withdrawalKeyNumPart2: assetBigInt,
-        withdrawalKeyNumPart3: amountBigInt,
+        withdrawalKeyNumPart2: amountBigInt,
         secretKey: secretKeyBigInt,
         directions,
         validBits,

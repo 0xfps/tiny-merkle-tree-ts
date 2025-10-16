@@ -321,20 +321,19 @@ function makeEven(str) {
 // src/contract-utils/extract-key-metadata.ts
 function extractKeyMetadata(key) {
   const keyHash = key.slice(0, 66);
-  const asset = `0x${key.slice(66, 106)}`;
-  const amount = BigInt(`0x${key.slice(106)}`);
-  const amountU32 = `0x${key.slice(106)}`;
-  return { keyHash, asset, amountU32, amount };
+  const amount = BigInt(`0x${key.slice(66)}`);
+  const amountU32 = `0x${key.slice(66)}`;
+  return { keyHash, amountU32, amount };
 }
 
 // src/contract-utils/generate-keys.ts
 var import_poseidon_hash2 = require("poseidon-hash");
-function generatekeys(asset, amount, secretKey) {
-  const withdrawalKey = generateWithdrawalKey(asset, amount, secretKey);
+function generatekeys(amount, secretKey) {
+  const withdrawalKey = generateWithdrawalKey(amount, secretKey);
   const depositKey = generateDepositKey(withdrawalKey, secretKey);
   return { withdrawalKey, depositKey };
 }
-function generateWithdrawalKey(asset, amount, secretKey) {
+function generateWithdrawalKey(amount, secretKey) {
   const entropy = makeEven(generateRandomNumber().toString(16));
   const hexSecretKey = (0, import_hexyjs3.strToHex)(secretKey);
   const entropyBigInt = BigInt(hexify(entropy));
@@ -342,20 +341,17 @@ function generateWithdrawalKey(asset, amount, secretKey) {
   const withdrawalKeyPoseidonFieldEquiv = (0, import_poseidon_hash2.poseidon)([entropyBigInt, secretKeyBigInt]);
   const withdrawalKeyPoseidonFieldEquivHexString = `0x${withdrawalKeyPoseidonFieldEquiv.toString(16)}`;
   const withdrawalKeyHash = smolPadding(withdrawalKeyPoseidonFieldEquivHexString);
-  const withdrawalKey = `${withdrawalKeyHash}${_encodePackAsset(asset)}${_encodePackAmount(amount)}`;
+  const withdrawalKey = `${withdrawalKeyHash}${_encodePackAmount(amount)}`;
   return withdrawalKey;
 }
 function generateDepositKey(withdrawalKey, secretKey) {
-  const { keyHash, asset, amount, amountU32 } = extractKeyMetadata(withdrawalKey);
+  const { keyHash, amount, amountU32 } = extractKeyMetadata(withdrawalKey);
   const hexSecretKey = (0, import_hexyjs3.strToHex)(secretKey);
   const hexSecretKeyNum = BigInt(hexify(hexSecretKey));
-  const depositKeyPosHash = (0, import_poseidon_hash2.poseidon)([BigInt(keyHash), BigInt(asset), BigInt(amountU32), hexSecretKeyNum]);
+  const depositKeyPosHash = (0, import_poseidon_hash2.poseidon)([BigInt(keyHash), BigInt(amountU32), hexSecretKeyNum]);
   const depositKeyHash = smolPadding(`0x${depositKeyPosHash.toString(16)}`);
-  const depositKey = `${depositKeyHash}${_encodePackAsset(asset)}${_encodePackAmount(amount)}`;
+  const depositKey = `${depositKeyHash}${_encodePackAmount(amount)}`;
   return depositKey;
-}
-function _encodePackAsset(asset) {
-  return asset.slice(2);
 }
 function _encodePackAmount(amount) {
   const hexAmount = hexify(amount.toString(16));
@@ -386,9 +382,8 @@ function getInputObjects(withdrawalKey, standardizedKey, secretKey, tree) {
   const root = bitsToNum(convertProofToBits(tree.root));
   const merkleProof = tree.generateMerkleProof(standardizedKey);
   const { proof, directions, validBits } = formatForCircom(merkleProof);
-  const { keyHash, asset, amountU32 } = extractKeyMetadata(withdrawalKey);
+  const { keyHash, amountU32 } = extractKeyMetadata(withdrawalKey);
   const wKeyBigInt = BigInt(keyHash);
-  const assetBigInt = BigInt(asset);
   const amountBigInt = BigInt(amountU32);
   const secretKeyBigInt = BigInt(`0x${(0, import_hexyjs4.strToHex)(secretKey)}`);
   const nullifier = generateRandomNumber();
@@ -397,8 +392,7 @@ function getInputObjects(withdrawalKey, standardizedKey, secretKey, tree) {
   return {
     root,
     withdrawalKeyNumPart1: wKeyBigInt,
-    withdrawalKeyNumPart2: assetBigInt,
-    withdrawalKeyNumPart3: amountBigInt,
+    withdrawalKeyNumPart2: amountBigInt,
     secretKey: secretKeyBigInt,
     directions,
     validBits,
@@ -411,11 +405,10 @@ function getInputObjects(withdrawalKey, standardizedKey, secretKey, tree) {
 // src/utils/get-leaf-from-key.ts
 var import_poseidon_hash3 = require("poseidon-hash");
 function getLeafFromKey(depositKey) {
-  const { keyHash, asset, amountU32 } = extractKeyMetadata(depositKey);
+  const { keyHash, amountU32 } = extractKeyMetadata(depositKey);
   const dKeyBigInt = BigInt(keyHash);
-  const assetBigInt = BigInt(asset);
   const amountBigInt = BigInt(amountU32);
-  const leafNum = (0, import_poseidon_hash3.poseidon)([dKeyBigInt, assetBigInt, amountBigInt]);
+  const leafNum = (0, import_poseidon_hash3.poseidon)([dKeyBigInt, amountBigInt]);
   const leaf = smolPadding(`0x${leafNum.toString(16)}`);
   return leaf;
 }
