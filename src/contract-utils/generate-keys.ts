@@ -7,14 +7,14 @@ import { makeEven } from "../utils/make-even";
 import { extractKeyMetadata } from "./extract-key-metadata";
 import { poseidon } from "poseidon-hash";
 
-export function generatekeys(amount: BigInt, secretKey: string): Keys {
+export function generatekeys(amount: bigint, secretKey: string): Keys {
     const withdrawalKey = generateWithdrawalKey(amount, secretKey)
     const depositKey = generateDepositKey(withdrawalKey, secretKey)
 
     return { withdrawalKey, depositKey }
 }
 
-function generateWithdrawalKey(amount: BigInt, secretKey: string): string {
+function generateWithdrawalKey(amount: bigint, secretKey: string): string {
     const entropy = makeEven(generateRandomNumber().toString(16))
     const hexSecretKey = strToHex(secretKey)
 
@@ -40,7 +40,7 @@ export function generateDepositKey(withdrawalKey: string, secretKey: string): st
     return depositKey
 }
 
-function _encodePackAmount(amount: BigInt): string {
+function _encodePackAmount(amount: bigint): string {
     const hexAmount = hexify(amount.toString(16))
     const encodePackAmount = smolPadding(hexAmount).slice(2)
     return encodePackAmount
