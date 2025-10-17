@@ -405,11 +405,11 @@ function getInputObjects(withdrawalKey, standardizedKey, secretKey, tree) {
 
 // src/utils/get-leaf-from-key.ts
 var import_poseidon_hash3 = require("poseidon-hash");
-function getLeafFromKey(depositKey) {
-  const { keyHash, amountU32 } = extractKeyMetadata(depositKey);
-  const dKeyBigInt = BigInt(keyHash);
+function getLeafFromKey(withdrawalKey) {
+  const { keyHash, amountU32 } = extractKeyMetadata(withdrawalKey);
+  const wKeyBigInt = BigInt(keyHash);
   const amountBigInt = BigInt(amountU32);
-  const leafNum = (0, import_poseidon_hash3.poseidon)([dKeyBigInt, amountBigInt]);
+  const leafNum = (0, import_poseidon_hash3.poseidon)([wKeyBigInt, amountBigInt]);
   const leaf = smolPadding(`0x${leafNum.toString(16)}`);
   return leaf;
 }

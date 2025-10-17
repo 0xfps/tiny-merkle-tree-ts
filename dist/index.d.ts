@@ -106,7 +106,7 @@ interface CircomInputObject {
 
 declare function getInputObjects(withdrawalKey: string, standardizedKey: string, secretKey: string, tree: MerkleTreeInterface): CircomInputObject;
 
-declare function getLeafFromKey(depositKey: string): string;
+declare function getLeafFromKey(withdrawalKey: string): string;
 
 interface TreeInterface {
     root: string;
