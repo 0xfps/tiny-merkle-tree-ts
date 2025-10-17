@@ -376,6 +376,7 @@ export {
   getMaxWithdrawalOnKey,
   getRandomNullifier,
   hashNums,
+  hexify,
   smolPadding,
   sortAndConcatLeaves,
   sortLeavesInAscOrder,
