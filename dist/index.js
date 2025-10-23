@@ -30,6 +30,7 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 // src/index.ts
 var index_exports = {};
 __export(index_exports, {
+  NOTE: () => NOTE,
   PRIME: () => PRIME,
   bitsToNum: () => bitsToNum,
   bytesToBits: () => bytesToBits,
@@ -43,6 +44,7 @@ __export(index_exports, {
   generatekeys: () => generatekeys,
   getInputObjects: () => getInputObjects,
   getLeafFromKey: () => getLeafFromKey,
+  getMaxSlots: () => getMaxSlots,
   getMaxWithdrawalOnAmount: () => getMaxWithdrawalOnAmount,
   getMaxWithdrawalOnKey: () => getMaxWithdrawalOnKey,
   getRandomNullifier: () => getRandomNullifier,
@@ -377,6 +379,17 @@ function getMaxWithdrawalOnAmount(amount) {
   return BigInt(amount.toString()) - BigInt(fee.toString());
 }
 
+// src/utils/get-max-slots.ts
+var NOTE = BigInt(1e8);
+function getMaxSlots(withdrawalKey) {
+  const { amountU32 } = extractKeyMetadata(withdrawalKey);
+  const amountBigInt = BigInt(amountU32);
+  const quotient = amountBigInt / NOTE;
+  const remainder = amountBigInt % NOTE;
+  const extraSlot = remainder ? 1n : 0n;
+  return Number(quotient + extraSlot);
+}
+
 // src/utils/get-input-object.ts
 var import_hexyjs4 = require("hexyjs");
 function getInputObjects(withdrawalKey, standardizedKey, secretKey, tree) {
@@ -387,6 +400,7 @@ function getInputObjects(withdrawalKey, standardizedKey, secretKey, tree) {
   const wKeyBigInt = BigInt(keyHash);
   const amountBigInt = BigInt(amountU32);
   const secretKeyBigInt = BigInt(`0x${(0, import_hexyjs4.strToHex)(secretKey)}`);
+  const slot = 0;
   const nullifier = generateRandomNumber();
   const nullHash = hashNums([nullifier]);
   const nullifierHash = bitsToNum(convertProofToBits(nullHash));
@@ -398,6 +412,7 @@ function getInputObjects(withdrawalKey, standardizedKey, secretKey, tree) {
     directions,
     validBits,
     proof,
+    slot,
     nullifier,
     nullifierHash
   };
@@ -418,6 +433,7 @@ function getLeafFromKey(depositKey) {
 var index_default = TinyMerkleTree;
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
+  NOTE,
   PRIME,
   bitsToNum,
   bytesToBits,
@@ -430,6 +446,7 @@ var index_default = TinyMerkleTree;
   generatekeys,
   getInputObjects,
   getLeafFromKey,
+  getMaxSlots,
   getMaxWithdrawalOnAmount,
   getMaxWithdrawalOnKey,
   getRandomNullifier,

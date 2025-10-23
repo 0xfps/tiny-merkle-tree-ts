@@ -11,6 +11,7 @@ import { getRandomNullifier } from "./utils/get-random-nullifier";
 import { hashNums } from "./utils/hash";
 import { generatekeys, generateDepositKey } from "./contract-utils/generate-keys";
 import { getMaxWithdrawalOnKey, getMaxWithdrawalOnAmount } from "./contract-utils/max-withdrawal";
+import { NOTE, getMaxSlots } from "./utils/get-max-slots";
 import { hexify } from "./utils/hexify";
 import { extractKeyMetadata } from "./contract-utils/extract-key-metadata";
 import { getInputObjects } from "./utils/get-input-object";
@@ -24,6 +25,7 @@ import { TreeInterface } from "../interfaces/tree";
 import { CircomInputObject } from "../interfaces/circom-input-object";
 
 export {
+    NOTE,
     PRIME,
     bitsToNum,
     bytesToBits,
@@ -36,6 +38,7 @@ export {
     generateRandomNumber,
     getInputObjects,
     getLeafFromKey,
+    getMaxSlots,
     getMaxWithdrawalOnAmount,
     getMaxWithdrawalOnKey,
     getRandomNullifier,

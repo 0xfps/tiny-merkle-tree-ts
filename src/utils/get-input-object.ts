@@ -23,6 +23,7 @@ export function getInputObjects(
     const wKeyBigInt = BigInt(keyHash)
     const amountBigInt = BigInt(amountU32)
     const secretKeyBigInt = BigInt(`0x${strToHex(secretKey)}`)
+    const slot = 0
     
     const nullifier = generateRandomNumber()
     const nullHash = hashNums([nullifier])
@@ -36,6 +37,7 @@ export function getInputObjects(
         directions,
         validBits,
         proof,
+        slot,
         nullifier,
         nullifierHash
     }
