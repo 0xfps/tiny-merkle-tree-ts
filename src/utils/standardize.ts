@@ -3,6 +3,7 @@ import { keccak256 } from "ethers";
 import bytesToBits from "./bytes-to-bits";
 import { smolPadding } from "./smol-padding";
 import { bitsToNum } from "./bits-to-num";
+import { hexify } from "./hexify";
 
 // Circom standard prime, used for Poseidon hash and Finite Field calculations.
 // Reference: https://docs.circom.io/circom-language/basic-operators/
@@ -24,13 +25,14 @@ export function standardizeHashToPoseidon(str: string, reverse: boolean = false)
     const hashBits = reverse ? bytesToBits(new Uint8Array(Buffer.from(hash.slice(2), "hex").reverse()))
         : bytesToBits(new Uint8Array(Buffer.from(hash.slice(2), "hex")))
     const reduced = new F1Field(PRIME).e(bitsToNum(hashBits))
-    return smolPadding(`0x${reduced.toString(16)}`)
+    return smolPadding(hexify(reduced.toString(16)))
 }
 
 // @todo Explain a lot about LSB.
+// @inheritdoc `standardizeHashToPoseidon`
 export function standardizeToPoseidon(str: string): string {
     const uint8Array = new Uint8Array(Buffer.from(str.slice(2), "hex"))
     const bigNumber = bitsToNum(bytesToBits(uint8Array))
     const reduced = new F1Field(PRIME).e(bigNumber)
-    return smolPadding(`0x${reduced.toString(16)}`)
+    return smolPadding(hexify(reduced.toString(16)))
 }
