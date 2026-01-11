@@ -60,12 +60,17 @@ __export(index_exports, {
 });
 module.exports = __toCommonJS(index_exports);
 
+// src/utils/hexify.ts
+function hexify(str) {
+  return `0x${str}`;
+}
+
 // src/utils/smol-padding.ts
 function smolPadding(str) {
   if (str.length > 66) throw new Error("Expected a bytes32 string.");
   const lenRem = 64 - (str.length - 2);
   const pad0 = "0".repeat(lenRem);
-  return `0x${pad0}${str.slice(2)}`;
+  return hexify(`${pad0}${str.slice(2)}`);
 }
 
 // src/utils/leaf-actions.ts
@@ -89,10 +94,10 @@ function sortAndConcatLeaves(leaf1, leaf2) {
 // src/utils/hash.ts
 var import_poseidon_hash = require("poseidon-hash");
 function hash(leaves) {
-  return smolPadding(`0x${(0, import_poseidon_hash.poseidon)(leaves).toString(16)}`);
+  return smolPadding(hexify((0, import_poseidon_hash.poseidon)(leaves).toString(16)));
 }
 function hashNums(nums) {
-  return smolPadding(`0x${(0, import_poseidon_hash.poseidon)(nums).toString(16)}`);
+  return smolPadding(hexify((0, import_poseidon_hash.poseidon)(nums).toString(16)));
 }
 
 // src/tree/build-tree.ts
@@ -267,13 +272,13 @@ function standardizeHashToPoseidon(str, reverse = false) {
   const hash2 = (0, import_ethers2.keccak256)(str);
   const hashBits = reverse ? bytesToBits(new Uint8Array(Buffer.from(hash2.slice(2), "hex").reverse())) : bytesToBits(new Uint8Array(Buffer.from(hash2.slice(2), "hex")));
   const reduced = new import_ffjavascript.F1Field(PRIME).e(bitsToNum(hashBits));
-  return smolPadding(`0x${reduced.toString(16)}`);
+  return smolPadding(hexify(reduced.toString(16)));
 }
 function standardizeToPoseidon(str) {
   const uint8Array = new Uint8Array(Buffer.from(str.slice(2), "hex"));
   const bigNumber = bitsToNum(bytesToBits(uint8Array));
   const reduced = new import_ffjavascript.F1Field(PRIME).e(bigNumber);
-  return smolPadding(`0x${reduced.toString(16)}`);
+  return smolPadding(hexify(reduced.toString(16)));
 }
 
 // src/utils/generate-random-number.ts
@@ -287,7 +292,7 @@ function generateRandomNumber() {
     length: 8,
     charset: ["alphanumeric"]
   });
-  const seed = Number(`0x${(0, import_hexyjs.strToHex)(randomString)}`);
+  const seed = Number(hexify((0, import_hexyjs.strToHex)(randomString)));
   const rng = import_pure_rand.default.xoroshiro128plus(seed);
   const randomNumber = import_pure_rand.default.unsafeUniformBigIntDistribution(LOWER_LIMIT, UPPER_LIMIT, rng);
   return randomNumber;
@@ -304,15 +309,10 @@ function getRandomNullifier() {
     length: 8,
     charset: ["alphanumeric"]
   });
-  const seed = Number(`0x${(0, import_hexyjs2.strToHex)(randomString)}`);
+  const seed = Number(hexify((0, import_hexyjs2.strToHex)(randomString)));
   const rng = import_pure_rand2.default.xoroshiro128plus(seed);
   const nullifier = import_pure_rand2.default.unsafeUniformIntDistribution(LOWER_LIMIT2, UPPER_LIMIT2, rng);
   return nullifier;
-}
-
-// src/utils/hexify.ts
-function hexify(str) {
-  return `0x${str}`;
 }
 
 // src/contract-utils/generate-keys.ts
@@ -326,8 +326,8 @@ function makeEven(str) {
 // src/contract-utils/extract-key-metadata.ts
 function extractKeyMetadata(key) {
   const keyHash = key.slice(0, 66);
-  const amount = BigInt(`0x${key.slice(66)}`);
-  const amountU32 = `0x${key.slice(66)}`;
+  const amount = BigInt(hexify(key.slice(66)));
+  const amountU32 = hexify(key.slice(66));
   return { keyHash, amountU32, amount };
 }
 
@@ -344,7 +344,7 @@ function generateWithdrawalKey(amount, secretKey) {
   const entropyBigInt = BigInt(hexify(entropy));
   const secretKeyBigInt = BigInt(hexify(hexSecretKey));
   const withdrawalKeyPoseidonFieldEquiv = (0, import_poseidon_hash2.poseidon)([entropyBigInt, secretKeyBigInt]);
-  const withdrawalKeyPoseidonFieldEquivHexString = `0x${withdrawalKeyPoseidonFieldEquiv.toString(16)}`;
+  const withdrawalKeyPoseidonFieldEquivHexString = hexify(withdrawalKeyPoseidonFieldEquiv.toString(16));
   const withdrawalKeyHash = smolPadding(withdrawalKeyPoseidonFieldEquivHexString);
   const withdrawalKey = `${withdrawalKeyHash}${_encodePackAmount(amount)}`;
   return withdrawalKey;
@@ -354,7 +354,7 @@ function generateDepositKey(withdrawalKey, secretKey) {
   const hexSecretKey = (0, import_hexyjs3.strToHex)(secretKey);
   const hexSecretKeyNum = BigInt(hexify(hexSecretKey));
   const depositKeyPosHash = (0, import_poseidon_hash2.poseidon)([BigInt(keyHash), BigInt(amountU32), hexSecretKeyNum]);
-  const depositKeyHash = smolPadding(`0x${depositKeyPosHash.toString(16)}`);
+  const depositKeyHash = smolPadding(hexify(depositKeyPosHash.toString(16)));
   const depositKey = `${depositKeyHash}${_encodePackAmount(amount)}`;
   return depositKey;
 }
@@ -460,7 +460,7 @@ function getInputObjects(withdrawalKey, standardizedKey, secretKey, tree) {
   const { keyHash, amountU32 } = extractKeyMetadata(withdrawalKey);
   const wKeyBigInt = BigInt(keyHash);
   const amountBigInt = BigInt(amountU32);
-  const secretKeyBigInt = BigInt(`0x${(0, import_hexyjs4.strToHex)(secretKey)}`);
+  const secretKeyBigInt = BigInt(hexify((0, import_hexyjs4.strToHex)(secretKey)));
   const nullifier = generateRandomNumber();
   const nullHash = hashNums([nullifier]);
   const nullifierHash = bitsToNum(convertProofToBits(nullHash));
@@ -484,7 +484,7 @@ function getLeafFromKey(depositKey) {
   const dKeyBigInt = BigInt(keyHash);
   const amountBigInt = BigInt(amountU32);
   const leafNum = (0, import_poseidon_hash3.poseidon)([dKeyBigInt, amountBigInt]);
-  const leaf = smolPadding(`0x${leafNum.toString(16)}`);
+  const leaf = smolPadding(hexify(leafNum.toString(16)));
   return leaf;
 }
 function getLeavesFromKeys(depositKeys) {
@@ -493,7 +493,7 @@ function getLeavesFromKeys(depositKeys) {
     const dKeyBigInt = BigInt(keyHash);
     const amountBigInt = BigInt(amountU32);
     const leafNum = (0, import_poseidon_hash3.poseidon)([dKeyBigInt, amountBigInt]);
-    const leaf = smolPadding(`0x${leafNum.toString(16)}`);
+    const leaf = smolPadding(hexify(leafNum.toString(16)));
     return leaf;
   });
   return leaves;

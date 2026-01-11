@@ -40,9 +40,11 @@ declare function bytesToBits(bytes: Uint8Array<ArrayBuffer>): number[];
  * Poseidon hash of some numbers, e.g 1 will yield a 31-byte string.
  * This function pads all leaves to 32 bytes before being used in the tree.
  * On the contract, it won't be an issue.
- * Pad up all leaves before calling new TinyMerkleTree and after every hash.
- * Leaves coming from the contract are already 32 byte padded.
+ * Pad up all leaves from the front before calling new TinyMerkleTree and
+ * after every hash. Leaves coming from the contract are already 32 byte padded.
  * If the leaf is already complete, nothing happens.
+ *
+ * Note To Remember: The inputs are expected to start with "0x".
  */
 declare function smolPadding(str: string): string;
 
@@ -67,6 +69,14 @@ declare function bitsToNum(bits: number[]): bigint;
 
 declare function generateRandomNumber(): bigint;
 
+/**
+ * Generates a random number used as the nullifier that goes between
+ * 1 and the maximum safe integer in JS/TS, this makes sure that
+ * the number generated is always within the PRIME limit and can be
+ * used in Circom.
+ *
+ * @returns number Nullifier.
+ */
 declare function getRandomNullifier(): number;
 
 declare function hashNums(nums: bigint[] | number[]): string;

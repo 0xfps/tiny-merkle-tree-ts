@@ -21,7 +21,7 @@ function generateWithdrawalKey(amount: bigint, secretKey: string): string {
     const entropyBigInt = BigInt(hexify(entropy))
     const secretKeyBigInt = BigInt(hexify(hexSecretKey))
     const withdrawalKeyPoseidonFieldEquiv = poseidon([entropyBigInt, secretKeyBigInt])
-    const withdrawalKeyPoseidonFieldEquivHexString = `0x${withdrawalKeyPoseidonFieldEquiv.toString(16)}`
+    const withdrawalKeyPoseidonFieldEquivHexString = hexify(withdrawalKeyPoseidonFieldEquiv.toString(16))
     const withdrawalKeyHash = smolPadding(withdrawalKeyPoseidonFieldEquivHexString)
 
     const withdrawalKey = `${withdrawalKeyHash}${_encodePackAmount(amount)}`
@@ -34,7 +34,7 @@ export function generateDepositKey(withdrawalKey: string, secretKey: string): st
     const hexSecretKeyNum = BigInt(hexify(hexSecretKey))
 
     const depositKeyPosHash = poseidon([BigInt(keyHash), BigInt(amountU32), hexSecretKeyNum])
-    const depositKeyHash = smolPadding(`0x${depositKeyPosHash.toString(16)}`)
+    const depositKeyHash = smolPadding(hexify(depositKeyPosHash.toString(16)))
 
     const depositKey = `${depositKeyHash}${_encodePackAmount(amount)}`
     return depositKey

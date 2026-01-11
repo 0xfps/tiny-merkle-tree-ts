@@ -7,6 +7,7 @@ import { CircomInputObject } from "../../interfaces/circom-input-object";
 import { bitsToNum } from "./bits-to-num";
 import { extractKeyMetadata } from "../contract-utils/extract-key-metadata";
 import { generateRandomNumber } from "./generate-random-number";
+import { hexify } from "./hexify";
 
 export function getInputObjects(
     withdrawalKey: string,
@@ -22,7 +23,7 @@ export function getInputObjects(
 
     const wKeyBigInt = BigInt(keyHash)
     const amountBigInt = BigInt(amountU32)
-    const secretKeyBigInt = BigInt(`0x${strToHex(secretKey)}`)
+    const secretKeyBigInt = BigInt(hexify(strToHex(secretKey)))
     
     const nullifier = generateRandomNumber()
     const nullHash = hashNums([nullifier])
