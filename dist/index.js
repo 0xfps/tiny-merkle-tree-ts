@@ -391,7 +391,6 @@ var CAP = 1e5;
 var HARD_CAP = power(CAP);
 function breakDownKey(masterWithdrawalKey, secretKey) {
   const { amount } = extractKeyMetadata(masterWithdrawalKey);
-  if (amount > HARD_CAP) throw new Error("$100,000 hard limit!");
   const notes = generateNoteCount(amount);
   return generateDepositKeysFromWithdrawalKeyNotes(notes, secretKey);
 }
