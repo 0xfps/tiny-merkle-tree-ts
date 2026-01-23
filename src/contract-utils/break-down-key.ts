@@ -17,7 +17,8 @@ export function breakDownKey(
 ): KeyBatch {
     const { amount } = extractKeyMetadata(masterWithdrawalKey)
 
-    if (amount > HARD_CAP) throw new Error("$100,000 hard limit!")
+    // @info Removed hard cap. Allow as much as possible, but flag onchain gas costs.
+    // if (amount > HARD_CAP) throw new Error("$100,000 hard limit!")
 
     const notes = generateNoteCount(amount) 
 
