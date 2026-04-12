@@ -36,6 +36,7 @@ __export(index_exports, {
   bitsToNum: () => bitsToNum,
   breakDownKey: () => breakDownKey,
   bytesToBits: () => bytesToBits,
+  calculateFee: () => calculateFee,
   concatLeaves: () => concatLeaves,
   convertProofToBits: () => convertProofToBits,
   default: () => index_default,
@@ -43,6 +44,7 @@ __export(index_exports, {
   formatForCircom: () => formatForCircom,
   generateDepositKey: () => generateDepositKey,
   generateKeys: () => generateKeys,
+  generateNoteCount: () => generateNoteCount,
   generateRandomNumber: () => generateRandomNumber,
   getInputObjects: () => getInputObjects,
   getLeafFromKey: () => getLeafFromKey,
@@ -55,6 +57,7 @@ __export(index_exports, {
   smolPadding: () => smolPadding,
   sortAndConcatLeaves: () => sortAndConcatLeaves,
   sortLeavesInAscOrder: () => sortLeavesInAscOrder,
+  splitFee: () => splitFee,
   standardizeHashToPoseidon: () => standardizeHashToPoseidon,
   standardizeToPoseidon: () => standardizeToPoseidon
 });
@@ -365,10 +368,19 @@ function _encodePackAmount(amount) {
 }
 
 // src/contract-utils/calculate-fee.ts
+var FEE_BPS = 70n;
+var PERCENTAGE_BASE = 100n;
+var COLLECTOR_BPS = 65n;
 function calculateFee(amount) {
-  const division = BigInt(amount.toString()) / 100n;
+  const division = BigInt((amount * FEE_BPS).toString()) / PERCENTAGE_BASE;
   const quotient = division.toString().split(".")[0];
   return BigInt(quotient);
+}
+function splitFee(amount) {
+  const fee = calculateFee(amount);
+  const collectorFee = fee * COLLECTOR_BPS / PERCENTAGE_BASE;
+  const guardianFee = fee - collectorFee;
+  return { collectorFee, guardianFee };
 }
 
 // src/contract-utils/max-withdrawal.ts
@@ -508,12 +520,14 @@ var index_default = TinyMerkleTree;
   bitsToNum,
   breakDownKey,
   bytesToBits,
+  calculateFee,
   concatLeaves,
   convertProofToBits,
   extractKeyMetadata,
   formatForCircom,
   generateDepositKey,
   generateKeys,
+  generateNoteCount,
   generateRandomNumber,
   getInputObjects,
   getLeafFromKey,
@@ -526,6 +540,7 @@ var index_default = TinyMerkleTree;
   smolPadding,
   sortAndConcatLeaves,
   sortLeavesInAscOrder,
+  splitFee,
   standardizeHashToPoseidon,
   standardizeToPoseidon
 });

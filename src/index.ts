@@ -13,17 +13,19 @@ import { generateKeys, generateDepositKey } from "./contract-utils/generate-keys
 import { getMaxWithdrawalOnKey, getMaxWithdrawalOnAmount } from "./contract-utils/max-withdrawal";
 import { hexify } from "./utils/hexify";
 import { extractKeyMetadata } from "./contract-utils/extract-key-metadata";
-import { CAP, HARD_CAP, breakDownKey } from "./contract-utils/break-down-key";
+import { calculateFee, splitFee } from "./contract-utils/calculate-fee";
+import { CAP, HARD_CAP, breakDownKey, generateNoteCount } from "./contract-utils/break-down-key";
 import { getInputObjects } from "./utils/get-input-object";
 import { getLeafFromKey, getLeavesFromKeys } from "./utils/get-leaf-from-key";
+import { CircomInputObject } from "../interfaces/circom-input-object";
 import { CircomProof } from "../interfaces/circom-proof";
+import { FeeStructure } from "../interfaces/fee";
+import { KeyBatch } from "../interfaces/key-batch";
 import { KeyMetadata } from "../interfaces/key-metadata";
 import { Keys } from "../interfaces/keys";
-import { KeyBatch } from "../interfaces/key-batch";
 import { MerkleTreeInterface } from "../interfaces/merkle-tree";
 import { Proof } from "../interfaces/proof";
 import { TreeInterface } from "../interfaces/tree";
-import { CircomInputObject } from "../interfaces/circom-input-object";
 
 export {
     CAP,
@@ -32,12 +34,14 @@ export {
     bitsToNum,
     breakDownKey,
     bytesToBits,
+    calculateFee,
     concatLeaves,
     convertProofToBits,
     extractKeyMetadata,
     formatForCircom,
     generateDepositKey,
     generateKeys,
+    generateNoteCount,
     generateRandomNumber,
     getInputObjects,
     getLeafFromKey,
@@ -50,8 +54,10 @@ export {
     smolPadding,
     sortAndConcatLeaves,
     sortLeavesInAscOrder,
+    splitFee,
     standardizeHashToPoseidon,
     standardizeToPoseidon,
+    FeeStructure,
     CircomInputObject,
     CircomProof,
     KeyBatch,
