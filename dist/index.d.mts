@@ -102,14 +102,31 @@ interface KeyMetadata {
 
 declare function extractKeyMetadata(key: string): KeyMetadata;
 
+interface FeeStructure {
+    collectorFee: bigint;
+    guardianFee: bigint;
+}
+
+declare function calculateFee(amount: bigint): bigint;
+declare function splitFee(amount: bigint): FeeStructure;
+
 interface KeyBatch {
     depositKeys: string[];
     withdrawalKeys: string[];
 }
 
+interface NoteCount {
+    thousandNotes: bigint;
+    hundredNotes: bigint;
+    tenNotes: bigint;
+    oneNotes: bigint;
+    decimalNote: bigint;
+}
+
 declare const CAP = 100000;
 declare const HARD_CAP: bigint;
 declare function breakDownKey(masterWithdrawalKey: string, secretKey: string): KeyBatch;
+declare function generateNoteCount(amount: bigint): NoteCount;
 
 interface CircomInputObject {
     root: bigint;
@@ -134,4 +151,4 @@ interface TreeInterface {
     depth: number;
 }
 
-export { CAP, type CircomInputObject, type CircomProof, HARD_CAP, type KeyBatch, type KeyMetadata, type Keys, type MerkleTreeInterface, PRIME, type Proof, type TreeInterface, bitsToNum, breakDownKey, bytesToBits, concatLeaves, convertProofToBits, TinyMerkleTree as default, extractKeyMetadata, formatForCircom, generateDepositKey, generateKeys, generateRandomNumber, getInputObjects, getLeafFromKey, getLeavesFromKeys, getMaxWithdrawalOnAmount, getMaxWithdrawalOnKey, getRandomNullifier, hashNums, hexify, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder, standardizeHashToPoseidon, standardizeToPoseidon };
+export { CAP, type CircomInputObject, type CircomProof, type FeeStructure, HARD_CAP, type KeyBatch, type KeyMetadata, type Keys, type MerkleTreeInterface, PRIME, type Proof, type TreeInterface, bitsToNum, breakDownKey, bytesToBits, calculateFee, concatLeaves, convertProofToBits, TinyMerkleTree as default, extractKeyMetadata, formatForCircom, generateDepositKey, generateKeys, generateNoteCount, generateRandomNumber, getInputObjects, getLeafFromKey, getLeavesFromKeys, getMaxWithdrawalOnAmount, getMaxWithdrawalOnKey, getRandomNullifier, hashNums, hexify, smolPadding, sortAndConcatLeaves, sortLeavesInAscOrder, splitFee, standardizeHashToPoseidon, standardizeToPoseidon };

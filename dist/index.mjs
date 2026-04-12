@@ -303,10 +303,19 @@ function _encodePackAmount(amount) {
 }
 
 // src/contract-utils/calculate-fee.ts
+var FEE_BPS = 7n;
+var PERCENTAGE_BASE = 100n;
+var COLLECTOR_BPS = 65n;
 function calculateFee(amount) {
-  const division = BigInt(amount.toString()) / 100n;
+  const division = BigInt((amount * FEE_BPS).toString()) / PERCENTAGE_BASE;
   const quotient = division.toString().split(".")[0];
   return BigInt(quotient);
+}
+function splitFee(amount) {
+  const fee = calculateFee(amount);
+  const collectorFee = fee * COLLECTOR_BPS / PERCENTAGE_BASE;
+  const guardianFee = fee - collectorFee;
+  return { collectorFee, guardianFee };
 }
 
 // src/contract-utils/max-withdrawal.ts
@@ -445,6 +454,7 @@ export {
   bitsToNum,
   breakDownKey,
   bytesToBits,
+  calculateFee,
   concatLeaves,
   convertProofToBits,
   index_default as default,
@@ -452,6 +462,7 @@ export {
   formatForCircom,
   generateDepositKey,
   generateKeys,
+  generateNoteCount,
   generateRandomNumber,
   getInputObjects,
   getLeafFromKey,
@@ -464,6 +475,7 @@ export {
   smolPadding,
   sortAndConcatLeaves,
   sortLeavesInAscOrder,
+  splitFee,
   standardizeHashToPoseidon,
   standardizeToPoseidon
 };

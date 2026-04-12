@@ -29,7 +29,7 @@ function power(num: number): bigint {
     return BigInt(num * (10 ** DECIMALS))
 }
 
-function generateNoteCount(amount: bigint): NoteCount {
+export function generateNoteCount(amount: bigint): NoteCount {
     let thousandNotes: bigint = 0n
     let hundredNotes: bigint = 0n
     let tenNotes: bigint = 0n
