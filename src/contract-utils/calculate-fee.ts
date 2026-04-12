@@ -2,7 +2,8 @@ import { FeeStructure } from "../../interfaces/fee"
 
 // 0.7% on every deposit, i.e. 7 / 1000.
 const FEE_BPS = 7n
-const PERCENTAGE_BASE = 1000n
+const FEE_PERCENTAGE_BASE = 1000n
+const PERCENTAGE_BASE = 100n
 
 // From the 0.7%;
 // 65% goes to collector.
@@ -10,7 +11,7 @@ const PERCENTAGE_BASE = 1000n
 const COLLECTOR_BPS = 65n
 
 export function calculateFee(amount: bigint): bigint {
-    const division = BigInt((amount * FEE_BPS).toString()) / PERCENTAGE_BASE
+    const division = BigInt((amount * FEE_BPS).toString()) / FEE_PERCENTAGE_BASE
     const quotient = division.toString().split(".")[0]
     return BigInt(quotient)
 }
