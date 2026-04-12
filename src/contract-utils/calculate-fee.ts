@@ -1,7 +1,7 @@
 import { FeeStructure } from "../../interfaces/fee"
 
-// 0.7% on every deposit.
-const FEE_BPS = 70n
+// 0.7% on every deposit, i.e. 7 / 1000.
+const FEE_BPS = 7n
 const PERCENTAGE_BASE = 100n
 
 // From the 0.7%;

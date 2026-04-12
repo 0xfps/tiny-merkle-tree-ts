@@ -1,6 +1,6 @@
 {
   "name": "@fifteenfigures/tiny-merkle-tree",
-  "version": "0.0.78",
+  "version": "0.0.79",
   "description": "A tiny, left-aligned merkle tree implementation in TypeScript with special utilities.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

@@ -303,7 +303,7 @@ function _encodePackAmount(amount) {
 }
 
 // src/contract-utils/calculate-fee.ts
-var FEE_BPS = 70n;
+var FEE_BPS = 7n;
 var PERCENTAGE_BASE = 100n;
 var COLLECTOR_BPS = 65n;
 function calculateFee(amount) {
