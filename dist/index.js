@@ -370,8 +370,8 @@ function _encodePackAmount(amount) {
 // src/contract-utils/calculate-fee.ts
 var FEE_BPS = 7n;
 var FEE_PERCENTAGE_BASE = 1000n;
-var PERCENTAGE_BASE = 100n;
 var COLLECTOR_BPS = 65n;
+var PERCENTAGE_BASE = 100n;
 function calculateFee(amount) {
   const division = BigInt((amount * FEE_BPS).toString()) / FEE_PERCENTAGE_BASE;
   const quotient = division.toString().split(".")[0];
